@@ -1,6 +1,6 @@
 import { signupInterface } from "@/interface/user/registerInterface";
 import { SignUpResponse } from "@/interface/user/registerResponseInterface";
-import axios, { AxiosResponse } from "axios";
+import  { AxiosResponse } from "axios";
 import Api from "../config/axiosConfig";
 import userEndpoints from "@/endpoints/userEndpoints";
 import { loginInterface } from "@/interface/user/loginInterface";
@@ -14,9 +14,7 @@ export const signUp = async (
         const response = await Api.post(userEndpoints.signUp, userData)
         return response
     } catch (error) {
-        if(axios.isAxiosError(error)){
-            throw error
-        }
+        apiHandler(error)
         return Promise.reject()
     }
 }
@@ -29,7 +27,7 @@ export const verifyOtp = async(
         const response = await Api.post(userEndpoints.verifyOtp, { email, otp })
         return response
     } catch (error) {
-        console.log(error);
+        apiHandler(error)
         return Promise.reject()
     }
 }
@@ -53,7 +51,7 @@ export const login = async (
         const response = await Api.post(userEndpoints.login, userCredentials)
         return response
     } catch (error) {
-        console.log(error)
+        apiHandler(error)
         return Promise.reject()
     }
 }
@@ -67,4 +65,6 @@ export const logout = async (): Promise<AxiosResponse <unknown>|undefined > => {
         return Promise.reject()
     }
 }
+
+
 

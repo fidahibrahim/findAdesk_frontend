@@ -8,12 +8,12 @@ import handleError from '@/utils/errorHandler';
 const Otp = () => {
   const [otp, setOtp] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
+  console.log(isVerifying);
   const [timer, setTimer] = useState(60);
   const location = useLocation();
   const navigate = useNavigate()
 
   const email = location.state?.email;
-
 
   useEffect(() => {
     const interval = setInterval(() => {

@@ -4,10 +4,8 @@ import { useDispatch, useSelector } from "react-redux"
 import { persistor, RootState } from "@/redux/store/store"
 import { logout } from "@/services/api/user"
 import { removeUserInfo } from "@/redux/slice/userSlice"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
-
-
 
 const Header = () => {
     const userInfo = useSelector((state: RootState) => state.user.userInfo)
@@ -23,8 +21,6 @@ const Header = () => {
         toast.success("Logout Successful!")
         navigate('/login');
     }
-
-
     useEffect(() => {
         const handleClick = (event: any) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -39,7 +35,6 @@ const Header = () => {
         <div>
             <header className="bg-gray-100 border-b border-gray-200 p-4">
                 <div className="container mx-auto flex items-center justify-between">
-                    {/* Left - Logo */}
                     <div>
                         <img
                             src="/user/logo.png"
@@ -47,8 +42,8 @@ const Header = () => {
                             className="h-8 w-auto"
                         />
                     </div>
-                    {/* Middle - Navigation */}
-                    <nav className="flex space-x-6 text-[#0C5A8D]">
+
+                    <nav className="flex ml-56 space-x-6 text-[#0C5A8D]">
                         <a href="/" className="hover:text-gray-900 dark:hover:text-indigo-400">
                             Home
                         </a>
@@ -90,11 +85,38 @@ const Header = () => {
                                     </div>
                                 </div>
                             )}
-
                         </div>
                     </nav>
-
-                    {/* Right - Buttons */}
+                    {
+                        !userInfo && (
+                                <div className="ml-32 group cursor-pointer">
+                                    <div className="flex items-center mt-2 text-[#0C5A8D]">
+                                        <span className="flex flex-col ">
+                                            <span className="text-xs font-semibold">LIST</span>
+                                            <span className="text-xs font-medium leading-tight">YOUR SPACE</span>
+                                        </span>
+                                        <div className="ml-1 bg-[#c1c0dd] mt-3  rounded-full w-4 h-4 flex items-center justify-center group-hover:bg-indigo-700" >
+                                            <Link to="/owner/" >
+                                                <svg
+                                                    width="10"
+                                                    height="10"
+                                                    viewBox="0 0 10 10"
+                                                    fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path
+                                                        d="M5 2.5V7.5M2.5 5H7.5"
+                                                        stroke="white"
+                                                        strokeWidth="1.5"
+                                                        strokeLinecap="round"
+                                                    />
+                                                </svg>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                        )
+                    }
                     <div className="flex items-center space-x-8">
                         {
                             !userInfo && (<button className="px-7 py-2 text-sm rounded-lg font-medium text-[#0C5A8D] border-2 border-gray-400">

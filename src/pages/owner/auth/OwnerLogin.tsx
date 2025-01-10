@@ -19,7 +19,7 @@ const OwnerLogin = () => {
           {/* Gray-scale image section */}
           <div className="h-full">
             <img 
-              src="/public/user/banner-1.jpg"
+              src="/user/banner-1.jpg"
               alt="Interior"
               className="h-full w-full object-cover grayscale"
             />
