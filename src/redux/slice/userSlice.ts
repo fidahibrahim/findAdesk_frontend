@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-
 interface UserState {
     userInfo: {
         _id: string;
@@ -27,5 +26,4 @@ const userSlice = createSlice({
 })
 
 export const { setUserInfo, removeUserInfo } = userSlice.actions;
-
 export default userSlice.reducer;

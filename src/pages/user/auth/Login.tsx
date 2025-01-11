@@ -25,7 +25,6 @@ const Login = () => {
       const response = await login(values)
       if (response?.status === 200) {
         toast.success("Successfully Logged into findAdesk")
-
         if (response.data?.user) {
           dispatch(setUserInfo({
             _id: response.data.user._id,
@@ -33,17 +32,14 @@ const Login = () => {
             email: response.data.user.email
           }));
         }
-
         navigate("/")
       }
-
     } catch (error) {
       toast.error("Invalid email or password!")
     }
   }
   return (
     <>
-
       <div className="min-h-screen bg-[url('/user/banner-3.jpg')] bg-cover bg-center relative">
         <div className="absolute inset-0 bg-black/40" />
 

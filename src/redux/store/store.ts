@@ -12,17 +12,19 @@ import {
 
 import userSlice from "../slice/userSlice"
 import adminSlice from "../slice/adminSlice"
+import ownerSlice from "../slice/ownerSlice"
 import { combineReducers, configureStore } from "@reduxjs/toolkit"
 
 const rootReducer = combineReducers({
     user: userSlice,
     admin: adminSlice,
+    owner: ownerSlice,
   });
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ["user", "admin"]
+    whitelist: ["user", "admin", "owner"]
 }
 
 const persistedReduce = persistReducer(persistConfig, rootReducer)

@@ -4,7 +4,8 @@ import apiHandler from "@/utils/apiHandler";
 import { AxiosResponse } from "axios";
 import Api from "../config/axiosConfig";
 import ownerEndpoints from "@/endpoints/ownerEndpoints";
-
+import { loginInterface } from "@/interface/user/loginInterface";
+import { loginResponse } from "@/interface/user/loginResponse";
 
 export const signUp = async (
     ownerData: signupInterface
@@ -36,6 +37,30 @@ export const resendOtp = async(
 ): Promise<AxiosResponse <void> | undefined > => {
     try {
         const response = await Api.post(ownerEndpoints.resendOtp,{ email })
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const login = async(
+    ownerCredentials: loginInterface
+): Promise <AxiosResponse<loginResponse> | undefined> => {
+    try {
+        const response = await Api.post(ownerEndpoints.login,  ownerCredentials )
+        console.log(response);
+        
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const ownerLogout = async (): Promise<AxiosResponse<unknown>|undefined> => {
+    try {
+        const response = await Api.post(ownerEndpoints.logout)
         return response
     } catch (error) {
         apiHandler(error)

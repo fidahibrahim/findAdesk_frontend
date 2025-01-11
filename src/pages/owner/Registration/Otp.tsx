@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 const Otp = () => {
     const [otp, setOtp] = useState('');
+    const [timer, setTimer] = useState(60);
     const [isVerifying, setIsVerifying] = useState(false);
     console.log(isVerifying);
     const navigate = useNavigate()
@@ -26,19 +27,20 @@ const Otp = () => {
             setOtp(value);
         }
     }
-    const [timer, setTimer] = useState(60);
 
     const handleVerify = async () => {
         if (otp.length !== 4) {
             toast.error("Please enter a 4-digit valid OTP")
             return
         }
+        console.log(email, "email in state")
         setIsVerifying(true);
         try {
+            console.log(email, otp, "eeee and oooooooooo")
             const response = await verifyOtp(email, otp)
             if (response?.status === 200) {
                 toast.success("OTP verified successfully")
-                navigate("/owner/login")
+                navigate("/owner/")
             } else {
                 toast.error("Invalid something went wrong");
             }
@@ -110,7 +112,7 @@ const Otp = () => {
 
                         </div>
 
-                        <form className="flex flex-col space-y-5 w-full">
+                        <form className="flex flex-col space-y-5 w-full" onSubmit={(e) => { e.preventDefault(); }}>
                             <div className="flex flex-col">
                                 <input
                                     type="text"

@@ -6,22 +6,22 @@ const Footer = () => {
       <div className="container mx-auto flex justify-between items-center">
         {/* Social Media Icons */}
         <div className="flex space-x-4">
-          <a 
-            href="#" 
+          <a
+            href="#"
             className="p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
             aria-label="Facebook"
           >
             <Facebook className="w-5 h-5 text-gray-600" />
           </a>
-          <a 
-            href="#" 
+          <a
+            href="#"
             className="p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
             aria-label="Instagram"
           >
             <Instagram className="w-5 h-5 text-gray-600" />
           </a>
-          <a 
-            href="#" 
+          <a
+            href="#"
             className="p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
             aria-label="LinkedIn"
           >

@@ -89,32 +89,32 @@ const Header = () => {
                     </nav>
                     {
                         !userInfo && (
-                                <div className="ml-32 group cursor-pointer">
-                                    <div className="flex items-center mt-2 text-[#0C5A8D]">
-                                        <span className="flex flex-col ">
-                                            <span className="text-xs font-semibold">LIST</span>
-                                            <span className="text-xs font-medium leading-tight">YOUR SPACE</span>
-                                        </span>
-                                        <div className="ml-1 bg-[#c1c0dd] mt-3  rounded-full w-4 h-4 flex items-center justify-center group-hover:bg-indigo-700" >
-                                            <Link to="/owner/" >
-                                                <svg
-                                                    width="10"
-                                                    height="10"
-                                                    viewBox="0 0 10 10"
-                                                    fill="none"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                >
-                                                    <path
-                                                        d="M5 2.5V7.5M2.5 5H7.5"
-                                                        stroke="white"
-                                                        strokeWidth="1.5"
-                                                        strokeLinecap="round"
-                                                    />
-                                                </svg>
-                                            </Link>
-                                        </div>
+                            <div className="ml-32 group cursor-pointer">
+                                <div className="flex items-center mt-2 text-[#0C5A8D]">
+                                    <span className="flex flex-col ">
+                                        <span className="text-xs font-semibold">LIST</span>
+                                        <span className="text-xs font-medium leading-tight">YOUR SPACE</span>
+                                    </span>
+                                    <div className="ml-1 bg-[#c1c0dd] mt-3  rounded-full w-4 h-4 flex items-center justify-center group-hover:bg-indigo-700" >
+                                        <Link to="/owner/" >
+                                            <svg
+                                                width="10"
+                                                height="10"
+                                                viewBox="0 0 10 10"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    d="M5 2.5V7.5M2.5 5H7.5"
+                                                    stroke="white"
+                                                    strokeWidth="1.5"
+                                                    strokeLinecap="round"
+                                                />
+                                            </svg>
+                                        </Link>
                                     </div>
                                 </div>
+                            </div>
                         )
                     }
                     <div className="flex items-center space-x-8">
