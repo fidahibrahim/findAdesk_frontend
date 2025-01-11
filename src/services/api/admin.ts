@@ -20,7 +20,7 @@ export const adminLogin = async (
     }
 }
 
-export const adminLogout = async (): Promise<AxiosResponse<unknown>|undefined> => {
+export const adminLogout = async (): Promise<AxiosResponse<unknown> | undefined> => {
     try {
         const response = await Api.post(adminEndpoints.logout)
         return response
@@ -29,11 +29,26 @@ export const adminLogout = async (): Promise<AxiosResponse<unknown>|undefined> =
     }
 }
 
-export const getUsers = async () => {
+export const getUsers = async (search: string, page: number) => {
     try {
-        return await Api.get(adminEndpoints.users)
+        return await Api.get(adminEndpoints.users, {
+            params: {
+                search,
+                page,
+            },
+        })
+    } catch (error) {
+        apiHandler(error)
+        throw error
+    }
+}
+
+export const blockUser = async (userId: string) => {
+    try {
+        return await Api.patch(adminEndpoints.blockUser, {
+            userId
+        })
     } catch (error) {
         apiHandler(error)
     }
 }
-
