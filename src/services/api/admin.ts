@@ -52,3 +52,24 @@ export const blockUser = async (userId: string) => {
         apiHandler(error)
     }
 }
+
+export const getOwners = async (search: string, page: number) => {
+    try {
+        return await Api.get(adminEndpoints.owners, {
+            params: {
+                search,
+                page
+            },
+        })
+    } catch (error) {
+        apiHandler(error)
+    }
+}
+
+export const blockOwner = async (ownerId: string) => {
+    try {
+        return await Api.patch(adminEndpoints.blockOwner, { ownerId })
+    } catch (error) {
+        apiHandler(error)
+    }
+}

@@ -23,10 +23,10 @@ const Register = () => {
 
         {/* Main Content */}
         <div className="flex-1 flex items-center justify-center px-4">
-          <Card className="w-full max-w-md bg-white/35 ">
+          <Card className="w-full max-w-md bg-white ">
             <CardContent className="pt-6">
               <h1 className="text-3xl font-bold text-center mb-2">REGISTER</h1>
-              <p className="text-center text-gray-100 mb-6">we are here to help you</p>
+              <p className="text-center text-gray-600 mb-6">we are here to help you</p>
                
               <RegisterForm/>
 

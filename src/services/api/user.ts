@@ -6,6 +6,7 @@ import userEndpoints from "@/endpoints/userEndpoints";
 import { loginInterface } from "@/interface/user/loginInterface";
 import { loginResponse } from "@/interface/user/loginResponse";
 import apiHandler from "@/utils/apiHandler";
+import { TokenResponse } from "@react-oauth/google";
 
 export const signUp = async (
     userData: signupInterface
@@ -49,6 +50,16 @@ export const login = async (
 ) : Promise <AxiosResponse<loginResponse> | undefined> =>{
     try {
         const response = await Api.post(userEndpoints.login, userCredentials)
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const googleLogin = async (token: TokenResponse) => {
+    try {
+        const response = await Api.post(userEndpoints.googleLogin, token)
         return response
     } catch (error) {
         apiHandler(error)

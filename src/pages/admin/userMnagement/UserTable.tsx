@@ -43,7 +43,6 @@ const UserTable: React.FC<UserTableProps> = ({ search, page }) => {
     const handleBlock = async (userId: string) => {
         try {
             const response = await blockUser(userId)
-            console.log("respooo", response)
             if (response?.status === 200) {
                 fetchUser()
                 toast.success(`User status has been updated successfully.`);

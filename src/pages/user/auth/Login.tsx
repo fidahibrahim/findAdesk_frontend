@@ -8,10 +8,13 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { loginSchema } from "@/validation/formValidation";
 import { loginInterface } from "@/interface/user/loginInterface";
 import { toast } from "sonner";
-import { login } from "@/services/api/user";
+import { googleLogin, login } from "@/services/api/user";
 import { useNavigate, } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUserInfo } from "@/redux/slice/userSlice";
+import { TokenResponse, useGoogleLogin } from "@react-oauth/google";
+import handleError from "@/utils/errorHandler";
+import { GoogleIcon } from "@/components/user/Google";
 
 
 
@@ -38,6 +41,26 @@ const Login = () => {
       toast.error("Invalid email or password!")
     }
   }
+
+  const handleGoogleSignup = useGoogleLogin({
+    onSuccess: async (response: TokenResponse) => {
+      try {
+        const responseData = await googleLogin(response);
+        if (responseData?.status == 200) {
+          dispatch(setUserInfo({
+            _id: responseData.data.user._id,
+            name: responseData.data.user.name,
+            email: responseData.data.user.email
+          }))
+          navigate('/')
+          toast.success("Logged in to findAdesk")
+        }
+      } catch (error) {
+        handleError(error)
+      }
+    }
+  })
+
   return (
     <>
       <div className="min-h-screen bg-[url('/user/banner-3.jpg')] bg-cover bg-center relative">
@@ -57,10 +80,10 @@ const Login = () => {
 
           {/* Main Content */}
           <div className="flex-1 flex items-center justify-center px-4">
-            <Card className="w-full max-w-md bg-white/35 ">
+            <Card className="w-full max-w-md bg-white ">
               <CardContent className="pt-6">
                 <h1 className="text-3xl font-bold text-center mb-2">LOGIN</h1>
-                <p className="text-center text-gray-100 mb-6">Welcome back to findAdesk</p>
+                <p className="text-center text-gray-600 mb-6">Welcome back to findAdesk</p>
 
                 <Formik
                   initialValues={{
@@ -121,9 +144,14 @@ const Login = () => {
                       </p>
 
                       <div className="pt-2">
-                        <Button className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700">
-                          Sign In with Google
-                        </Button>
+                        <button
+                          type="button"
+                          onClick={() => handleGoogleSignup()}
+                          className="w-full h-10 px-4 flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                        >
+                          <GoogleIcon />
+                          <span className="text-gray-600 font-medium">Sign in with Google</span>
+                        </button>
                       </div>
 
                       <div>
