@@ -16,7 +16,7 @@ interface UserTableProps {
     setTotalPages: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const UserTable: React.FC<UserTableProps> = ({ search, page }) => {
+const UserTable: React.FC<UserTableProps> = ({ search, page, setTotalPages }) => {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(false);
 
@@ -26,6 +26,7 @@ const UserTable: React.FC<UserTableProps> = ({ search, page }) => {
             const response = await getUsers(search, page);
             if (response.status === 200) {
                 setUsers(response.data.users)
+                setTotalPages(response.data.totalPages)
             }
             setLoading(false);
         } catch (error) {

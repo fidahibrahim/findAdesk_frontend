@@ -17,7 +17,6 @@ import handleError from "@/utils/errorHandler";
 import { GoogleIcon } from "@/components/user/Google";
 
 
-
 const Login = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const navigate = useNavigate()
@@ -38,7 +37,7 @@ const Login = () => {
         navigate("/")
       }
     } catch (error) {
-      toast.error("Invalid email or password!")
+      handleError(error)
     }
   }
 

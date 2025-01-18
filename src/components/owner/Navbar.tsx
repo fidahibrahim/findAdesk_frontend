@@ -26,7 +26,7 @@ const Navbar = () => {
                             <span>Dashboard</span>
                         </a>
                         <a
-                            href="/workspace"
+                            href="/owner/workspace"
                             className={`flex items-center space-x-2 p-2 rounded-lg ${location.pathname === "/workspace"
                                 ? "bg-gray-100 text-gray-700"
                                 : "text-gray-600 hover:bg-gray-100"

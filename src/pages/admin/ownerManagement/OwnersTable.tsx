@@ -17,7 +17,7 @@ interface Owner {
 }
 
 
-const OwnersTable: React.FC<OwnersTableProps> = ({ search, page }) => {
+const OwnersTable: React.FC<OwnersTableProps> = ({ search, page, setTotalPages }) => {
     const [owners, setOwners] = useState<Owner[]>([])
     const [loading, setLoading] = useState(false);
 
@@ -27,6 +27,7 @@ const OwnersTable: React.FC<OwnersTableProps> = ({ search, page }) => {
             const response = await getOwners(search, page)
             if (response?.status == 200) {
                 setOwners(response.data.owners)
+                setTotalPages(response.data.totalPages)
             }
             setLoading(false)
         } catch (error) {
