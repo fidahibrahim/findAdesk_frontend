@@ -1,11 +1,12 @@
-import { signupInterface } from "./registerInterface";
 
 export interface SignUpResponse {
     message: string;
-    user: Omit<signupInterface, "password" | "confirmPassword"> & {
+    data:  {
+        _id: string;
+        name: string;
+        email: string;
+        image: string
         verified: boolean;
-        isAdmin?: boolean;
-        createdAt: string
+
     }
-    email: string
 }

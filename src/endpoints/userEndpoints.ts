@@ -5,7 +5,7 @@ const userEndpoints = {
     verifyOtp: "/api/verifyOtp",
     resendOtp: "/api/resendOtp",
     logout: "/api/logout",
-    
+    forgotPassword: "/api/forgotPassword"
 }
 
 export default userEndpoints

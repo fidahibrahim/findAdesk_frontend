@@ -3,7 +3,11 @@ const ownerEndpoints = {
     verifyOtp: "/owner/verifyOtp",
     resendOtp: "/owner/resendOtp",
     login: "/owner/",
-    logout: "/owner/logout"
+    logout: "/owner/logout",
+    register: "/owner/addWorkspace",
+    listWorkspaces: "/owner/listWorkspaces",
+    viewDetails: "/owner/viewDetails",
+    
 }
 
 export default ownerEndpoints

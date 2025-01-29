@@ -7,6 +7,7 @@ import OwnerDashboard from '@/pages/owner/dashboard/OwnerDashboard'
 import Otp from '@/pages/owner/Registration/Otp'
 import Register from '@/pages/owner/Registration/Register'
 import Registration from '@/pages/owner/workspaceManage/Registration'
+import ViewDetails from '@/pages/owner/workspaceManage/ViewDetails'
 import Workspace from '@/pages/owner/workspaceManage/Workspace'
 import { Route, Routes } from 'react-router-dom'
 
@@ -20,8 +21,9 @@ const OwnerRouter = () => {
         <Route path='/dashboard' element={<WithAuth component={OwnerDashboard} />} />
         <Route path='/forgotPassword' element={<ForgetPassword />} />
         <Route path='/changePassword' element={<ChangePassword />} />
-        <Route path='/workspace' element={<Workspace/>} />
-        <Route path='/workspaceRegister' element={<Registration/>} />
+        <Route path='/workspace' element={<WithAuth component={Workspace} />} />
+        <Route path='/workspaceRegister' element={<WithAuth component={Registration} />} />
+        <Route path='/viewDetails' element={<WithAuth component={ViewDetails} />} />
       </Routes>
     </>
   )

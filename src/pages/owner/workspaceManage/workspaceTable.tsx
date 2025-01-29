@@ -1,5 +1,36 @@
+import { workspaceRes } from "@/interface/owner/WorkspaceRegisterValues";
+import { listWorkspaces } from "@/services/api/owner";
+import handleError from "@/utils/errorHandler";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const WorkspaceTable = () => {
+    const [workspaces, setWorkspaces] = useState<workspaceRes[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    const navigate = useNavigate()
+
+    const handleVievClick = (workspaceId: string|undefined) =>{
+        navigate("/owner/viewDetails",{ state:{ workspaceId: workspaceId } })
+    }
+
+    useEffect(() => {
+        const fetchWorkspaces = async () => {
+            try {
+                const response = await listWorkspaces()
+                if(response.status === 200){
+                    setWorkspaces(response.data.data)
+                }
+            } catch (error) {
+                handleError(error)
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchWorkspaces()
+    },[])
+
+
     return (
         <div className="bg-white rounded-lg ml-64 shadow-lg">
             <div className="overflow-x-auto">
@@ -15,33 +46,41 @@ const WorkspaceTable = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {/* No data available */}
-                        {/* <tr>
-              <td colSpan={4} className="text-center py-8 text-gray-600">
-                No users found
-              </td>
-            </tr> */}
-
-                        {/* Example row */}
-                        <tr className="bg-blue-50">
-                            <td className="py-3 pl-10 pr-2 text-sm">1</td>
-                            <td className="py-3 px-16 text-sm">John Doe</td>
-                            <td className="py-3 px-12 text-sm">₹ 400</td>
-                            <td className="py-3 px-11 text-sm">Active</td>
-                            <td className="py-3 px-7">
-                                <button
-                                    className="bg-blue-100 text-blue-600 hover:bg-blue-200 mr-3 py-1 px-3 rounded"
-                                >
-                                    Edit
-                                </button>
-                                <button
-                                    className="bg-blue-100 text-blue-600 hover:bg-blue-200 py-1 px-3 rounded"
-                                >
-                                    Delete
-                                </button>
-                            </td>
-                            <td className="py-3 px-10 text-sm text-blue-500 underline "> View </td>
-                        </tr>
+                        {loading ? (
+                            <tr>
+                                <td colSpan={6} className="text-center py-8 text-gray-600">
+                                    Loading...
+                                </td>
+                            </tr>
+                        ) : workspaces.length === 0 ? (
+                            <tr>
+                                <td colSpan={6} className="text-center py-8 text-gray-600">
+                                    No data found
+                                </td>
+                            </tr>
+                        ) : (
+                            workspaces.map((workspace, index) => (
+                                <tr key={workspace._id} className="bg-blue-50">
+                                    <td className="py-3 pl-10 pr-2 text-sm">{index + 1}</td>
+                                    <td className="py-3 px-16 text-sm">{workspace.workspaceName}</td>
+                                    <td className="py-3 px-12 text-sm">₹ {workspace.pricePerHour}</td>
+                                    <td className="py-3 px-11 text-sm">{workspace.status}</td>
+                                    <td className="py-3 px-7">
+                                        <button
+                                            className="bg-blue-100 text-blue-600 hover:bg-blue-200 mr-3 py-1 px-3 rounded"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            className="bg-blue-100 text-blue-600 hover:bg-blue-200 py-1 px-3 rounded"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                    <td onClick={()=>handleVievClick(workspace._id)} className="py-3 px-10 text-sm text-blue-500 underline"> View </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
             </div>

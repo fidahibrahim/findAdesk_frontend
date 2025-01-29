@@ -1,14 +1,18 @@
-import Header from '@/components/owner/Header';
-import Navbar from '@/components/owner/Navbar'
+import Header from "@/components/admin/Header"
+import Navbar from "@/components/admin/Navbar"
 import AdminSearch from '@/components/admin/AdminSearch';
-import { Search } from 'lucide-react';
-import { useState } from 'react';
-import WorkspaceTable from './workspaceTable';
-import { Link } from 'react-router-dom';
-const Workspace = () => {
+import { useState } from "react";
+import { Search } from "lucide-react";
+import WorkspaceTable from "./WorkspaceTable";
+import { string } from "yup";
+
+
+const Workspaces = () => {
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
+    const [filter, setFilter] = useState('all');
+
 
     const debouncedSearch = AdminSearch(search, 500)
     return (
@@ -18,18 +22,7 @@ const Workspace = () => {
                 <Header />
                 <div className="p-14">
                     <div className="flex justify-between items-center mb-6">
-                        <div>
-                            <h2 className="text-xl px-64 mb-5 font-medium text-gray-400">
-                                Manage Your Workspace
-                            </h2>
-                            <Link to='/owner/workspaceRegister'>
-                            <button
-                                className="mt-2 mb-2 ml-64 text-gray-600 px-4 py-2 border-2 rounded-md hover:bg-blue-300"
-                            >
-                                Add Workspace
-                            </button>
-                            </Link>
-                        </div>
+                        <h2 className="text-xl px-72 font-medium text-gray-400">Workspace Management</h2>
                         <div className="relative">
                             <input
                                 type="text"
@@ -43,7 +36,28 @@ const Workspace = () => {
                             </button>
                         </div>
                     </div>
-                    <WorkspaceTable />
+                    <div className="flex px-72 space-x-4 mb-6">
+                    <button 
+                        onClick={() => setFilter('approved')}
+                        className={`px-6 py-2 border rounded-md focus:outline-none transition-colors
+                            ${filter === 'approved' 
+                                ? 'bg-blue-50 border-blue-200 text-blue-600' 
+                                : 'hover:bg-gray-50'}`}
+                    >
+                        ✓ Approved
+                    </button>
+                    <button 
+                        onClick={() => setFilter('rejected')}
+                        className={`px-6 py-2 border rounded-md focus:outline-none transition-colors
+                            ${filter === 'rejected' 
+                                ? 'bg-blue-50 border-blue-200 text-blue-600' 
+                                : 'hover:bg-gray-50'}`}
+                    >
+                        ✕ Rejected
+                    </button>
+                </div>
+
+                    <WorkspaceTable search={debouncedSearch} page={page} setTotalPages={setTotalPages} />
                     <div className="flex pl-64 justify-center gap-0 py-28 ">
                         <button
                             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
@@ -62,6 +76,4 @@ const Workspace = () => {
     )
 }
 
-
-
-export default Workspace
+export default Workspaces

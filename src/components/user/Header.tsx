@@ -15,11 +15,14 @@ const Header = () => {
     const navigate = useNavigate()
 
     const handleLogout = async () => {
-        await logout()
-        dispatch(removeUserInfo());
-        persistor.purge()
-        toast.success("Logout Successful!")
-        navigate('/login');
+        const response = await logout()
+        if (response?.status === 200) {
+            dispatch(removeUserInfo());
+            persistor.purge()
+            navigate('/login');
+            toast.success("Logout Successful!")
+        }
+
     }
     useEffect(() => {
         const handleClick = (event: any) => {

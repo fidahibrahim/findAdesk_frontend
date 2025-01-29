@@ -6,7 +6,7 @@ const Navbar = () => {
 
     return (
         <>
-            <div className="fixed inset-y-0 left-0 w-64 bg-white shadow-lg">
+            <div className="fixed inset-y-0 left-0 w-64 bg-gray-100 shadow-lg">
                 <div className="p-4">
                     <a href="/owner/dashboard" className="flex mt-12 px-3 items-center space-x-9">
                         <img src="/user/logo.png" alt="FINDADESK" className="h-12" />

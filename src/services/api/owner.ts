@@ -7,6 +7,13 @@ import ownerEndpoints from "@/endpoints/ownerEndpoints";
 import { loginInterface } from "@/interface/user/loginInterface";
 import { loginResponse } from "@/interface/user/loginResponse";
 
+
+export interface WorkspaceResponse {
+    success: boolean;
+    message: string;
+    data?: any; 
+}
+
 export const signUp = async (
     ownerData: signupInterface
 ): Promise<AxiosResponse<SignUpResponse>> => {
@@ -61,6 +68,42 @@ export const login = async(
 export const ownerLogout = async (): Promise<AxiosResponse<unknown>|undefined> => {
     try {
         const response = await Api.post(ownerEndpoints.logout)
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const workspaceRegister = async ( workspaceData: FormData ): Promise<AxiosResponse<WorkspaceResponse>> => {
+    try {
+        workspaceData.forEach((data)=>console.log(data))
+
+        const response = await Api.post(ownerEndpoints.register, workspaceData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const listWorkspaces = async () => {
+    try {
+        const response = await Api.get(ownerEndpoints.listWorkspaces)
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const viewDetails = async (workspaceId: string) => {
+    try {
+        const response = await Api.get(`${ownerEndpoints.viewDetails}?workspaceId=${workspaceId}`)
         return response
     } catch (error) {
         apiHandler(error)

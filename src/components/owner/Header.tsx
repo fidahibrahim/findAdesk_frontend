@@ -10,7 +10,7 @@ import { ownerLogout } from '@/services/api/owner';
 
 const Header = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const adminInfo = useSelector((state: RootState) => state.admin.adminInfo)
+    const ownerInfo = useSelector((state: RootState) => state.owner.ownerInfo)
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
@@ -24,7 +24,7 @@ const Header = () => {
 
     return (
         <>
-            <header className="bg-white shadow-md">
+            <header className="bg-white shadow-md ">
                 <div className="flex justify-between items-center py-8">
                     <div className="relative ml-auto mr-8  ">
                         <button
@@ -33,7 +33,7 @@ const Header = () => {
                         >
                             <span >Welcome ,
                                 {
-                                    adminInfo ? adminInfo.name : <span> Admin</span>
+                                    ownerInfo ? ownerInfo.name : <span> Admin</span>
                                 }
 
                             </span>

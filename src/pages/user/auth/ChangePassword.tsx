@@ -1,8 +1,7 @@
-import { useState } from 'react'
+import { registrationSchema } from '@/validation/formValidation';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 
 const ChangePassword = () => {
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
 
     const handleSubmit = () => {
         // Add your password reset logic here
@@ -19,45 +18,67 @@ const ChangePassword = () => {
                         />
                     </div>
                     <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+                        <Formik
+                            initialValues={{
+                                password: '',
+                                confirmPassword: '',
+                            }}
+                            validationSchema={registrationSchema}
+                            onSubmit={handleSubmit}
+                        >
+                            {({ isSubmitting }) => (
+                                <Form className="space-y-6">
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            New Password
+                                        </label>
+                                        <Field
+                                            name="password"
+                                            type="password"
+                                            placeholder='Enter New Password'
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-400"
+                                            required
+                                        />
+                                        <div className='h2'>
+                                            <ErrorMessage
+                                                name="password"
+                                                component="div"
+                                                className="text-red-500 text-sm"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            Confirm Password
+                                        </label>
+                                        <Field
+                                            name="confirmPassword"
+                                            type="password"
+                                            placeholder='Confirm the Password'
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-400"
+                                            required
+                                        />
+                                        <div className='h-2'>
+                                            <ErrorMessage
+                                                name="confirmPassword"
+                                                component="div"
+                                                className="text-red-500 text-sm"
+                                            />
+                                        </div>
+                                    </div>
 
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            {/* Email Input */}
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700">
-                                    New Password
-                                </label>
-                                <input
-                                    type="password"
-                                    value={newPassword}
-                                    placeholder='Enter New Password'
-                                    onChange={(e) => setNewPassword(e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-400"
-                                    required
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700">
-                                    Confirm Password
-                                </label>
-                                <input
-                                    type="password"
-                                    value={confirmPassword}
-                                    placeholder='Confirm the Password'
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-400"
-                                    required
-                                />
-                            </div>
+                                    {/* Submit Button */}
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className="w-full py-3 bg-[#2A2359] text-white rounded-sm hover:bg-[#1F1A45] transition-colors"
+                                    >
+                                        Submit
+                                    </button>
+                                </Form>
+                            )}
 
-                            {/* Submit Button */}
-                            <button
-                                type="submit"
-                                className="w-full py-3 bg-[#2A2359] text-white rounded-sm hover:bg-[#1F1A45] transition-colors"
-                            >
-                                Submit
-                            </button>
-                        </form>
-
+                        </Formik>
                     </div>
                 </div>
             </div>

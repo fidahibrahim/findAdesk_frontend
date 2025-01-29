@@ -6,7 +6,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="fixed inset-y-0 left-0 w-64 bg-white shadow-lg">
+      <div className="fixed inset-y-0 left-0 w-64 bg-gray-100 shadow-lg">
         <div className="p-4">
           <a href="/admin/dashboard" className="flex mt-12 px-3 items-center space-x-9">
             <img src="/user/logo.png" alt="FINDADESK" className="h-12" />
@@ -18,7 +18,7 @@ const Navbar = () => {
             <a
               href="/admin/dashboard"
               className={`flex items-center space-x-2 p-2 rounded-lg ${location.pathname === "/admin/dashboard"
-                ? "bg-gray-100 text-gray-700"
+                ? "bg-gray-300 text-gray-600"
                 : "text-gray-600 hover:bg-gray-100"
                 }`}
             >
@@ -28,7 +28,7 @@ const Navbar = () => {
             <a
               href="/admin/userManagement"
               className={`flex items-center space-x-2 p-2 rounded-lg ${location.pathname === "/admin/userManagement"
-                ? "bg-gray-100 text-gray-700"
+                ? "bg-gray-300 text-gray-700"
                 : "text-gray-600 hover:bg-gray-100"
                 }`}
             >
@@ -38,7 +38,7 @@ const Navbar = () => {
             <a
               href="/admin/ownerManagement"
               className={`flex items-center space-x-2 p-2 rounded-lg ${location.pathname === "/admin/ownerManagement"
-                ? "bg-gray-100 text-gray-700"
+                ? "bg-gray-300 text-gray-700"
                 : "text-gray-600 hover:bg-gray-100"
                 }`}
             >
@@ -46,9 +46,9 @@ const Navbar = () => {
               <span>Owner Management</span>
             </a>
             <a
-              href="/admin/workspace"
-              className={`flex items-center space-x-2 p-2 rounded-lg ${location.pathname === "/admin/workspace"
-                ? "bg-gray-100 text-gray-700"
+              href="/admin/workspaceManagement"
+              className={`flex items-center space-x-2 p-2 rounded-lg ${location.pathname === "/admin/workspaceManagement"
+                ? "bg-gray-300 text-gray-700"
                 : "text-gray-600 hover:bg-gray-100"
                 }`}
             >
@@ -58,7 +58,7 @@ const Navbar = () => {
             <a
               href="/admin/revenue"
               className={`flex items-center space-x-2 p-2 rounded-lg ${location.pathname === "/admin/revenue"
-                ? "bg-gray-100 text-gray-700"
+                ? "bg-gray-300 text-gray-700"
                 : "text-gray-600 hover:bg-gray-100"
                 }`}
             >

@@ -1,5 +1,6 @@
 import { SUPPORTED_IMAGE_FORMATS } from "@/components/owner/ErrorWrapper";
 import * as yup from "yup";
+import dayjs from 'dayjs';
 
 export const registrationSchema = yup.object().shape({
   username: yup.string()
@@ -63,14 +64,19 @@ export const workspaceRegisterSchema = yup.object().shape({
     .min(3, "Name must contain minimum 3 letters")
     .max(50, "Name is too long"),
 
+  workspaceMail: yup.string()
+    .email("Invalid email")
+    .required('Mail Id is required'),
+
   workspaceType: yup.string()
     .oneOf(['coWorking', 'meetingRoom', 'conferenceHall'], 'Please select a valid workspace type')
     .required('Workspace Type is required'),
 
-  capacity: yup.string()
-    .oneOf(['1-10', '10-20', '20-40'], 'Please select a valid capacity range')
+  capacity: yup
+    .number()
+    .typeError('Capacity must be a valid number')
+    .min(1, 'Capacity must be at least 1')
     .required('Capacity is required'),
-
   place: yup.string()
     .matches(/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/, "Place must only contain letters with single spaces between words")
     .required('Place is required')
@@ -95,20 +101,15 @@ export const workspaceRegisterSchema = yup.object().shape({
     })
     .matches(/^\S+(?:\s+\S+)*$/, "Description cannot start or end with spaces or contain multiple consecutive spaces"),
 
-  startTime: yup.string()
-    .required('Start Time is required'),
-
-  endTime: yup.string()
-    .required('End Time is required')
-    .test('time-difference', 'End time must be at least 1 hour after start time', function (value) {
+  startTime: yup.mixed().required('Start time is required'),
+  endTime: yup.mixed()
+    .required('End time is required')
+    .test('min-duration', 'End time must be at least 1 hour after start time', function (endTime) {
       const { startTime } = this.parent;
-      if (!startTime || !value) return true;
-
-      const start = new Date(`2000/01/01 ${startTime}`).getTime();
-      const end = new Date(`2000/01/01 ${value}`).getTime();
-      const diffInHours = (end - start) / (1000 * 60 * 60);
-
-      return diffInHours >= 1;
+      if (dayjs.isDayjs(startTime) && dayjs.isDayjs(endTime)) {
+        return endTime.diff(startTime, 'hour') >= 1;
+      }
+      return true;
     }),
 
   workingDays: yup.string()

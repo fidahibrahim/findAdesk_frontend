@@ -8,7 +8,6 @@ import handleError from '@/utils/errorHandler';
 const Otp = () => {
   const [otp, setOtp] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
-  console.log(isVerifying);
   const [timer, setTimer] = useState(60);
   const location = useLocation();
   const navigate = useNavigate()
@@ -55,7 +54,6 @@ const Otp = () => {
   const handleResend = async () => {
     try {
       const response = await resendOtp(email)
-      console.log(response,"response in handleresend");
       if (response?.status === 200) {
         toast.success("OTP resend successfully")
         setTimer(60)

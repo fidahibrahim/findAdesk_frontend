@@ -73,3 +73,19 @@ export const blockOwner = async (ownerId: string) => {
         apiHandler(error)
     }
 }
+
+export const getWorkspaces = async () => {
+    try {
+        return await Api.get(adminEndpoints.workspaces)
+    } catch (error) {
+        apiHandler(error)
+    }
+}
+
+export const updateStatus = async (workspaceId: string|undefined, status: string)=>{
+    try {
+        return await Api.put(adminEndpoints.updateStatus, { workspaceId, status })
+    } catch (error) {
+        apiHandler(error)
+    }
+}

@@ -54,9 +54,9 @@ const RegisterForm = () => {
         try {
           const response = await signUp(values);
           console.log("response from reg", response)
-          if (response.status === 200) {
+          if (response.status === 201) {
             toast.success("An otp is sent to your mail");
-            navigate("/otp", { state: { email: response.data.email } })
+            navigate("/otp", { state: { email: response.data.data.email } })
           }
         } catch (error) {
           handleError(error)
