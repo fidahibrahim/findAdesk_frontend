@@ -18,7 +18,6 @@ const AdminLogin = () => {
           const response = await adminLogin(values)
           if(response?.status==200){
             toast.success("logged in successfully")
-            
             if (response.data?.admin) {
                       dispatch(setAdminInfo({
                         _id: response.data.admin._id,

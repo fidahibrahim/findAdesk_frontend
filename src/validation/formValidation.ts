@@ -33,6 +33,27 @@ export const registrationSchema = yup.object().shape({
 
 })
 
+export const changePassSchema = yup.object().shape({
+
+  password: yup.string()
+    .min(8, "Password must be at least 8 characters")
+    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .matches(/\d/, "Password must contain at least one number")
+    .matches(
+      /[!@#$%^&*(),.?":{}|<>]/,
+      "Password must contain at least one special character"
+    )
+    .required("Password is required"),
+
+  confirmPassword: yup.string()
+    .oneOf([yup.ref("password")], "Passwords must match")
+    .required("Confirm Password is required"),
+
+})
+
+
+
 export const loginSchema = yup.object().shape({
   email: yup.string()
     .email("Invalid email")
@@ -165,5 +186,21 @@ export const workspaceRegisterSchema = yup.object().shape({
       })
     )
     .required('Images are required')
+});
+
+export const contactSchema = yup.object({
+  name: yup.string()
+    .matches(/^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/, "Name must only contain letters with single spaces between words")
+    .required('Name is required')
+    .min(2, 'Name must be at least 2 characters'),
+  email: yup.string()
+    .email('Invalid email address')
+    .required('Email is required'),
+  subject: yup.string()
+    .required('Subject is required')
+    .min(3, 'Subject must be at least 3 characters'),
+  message: yup.string()
+    .required('Message is required')
+    .min(10, 'Message must be at least 10 characters')
 });
 

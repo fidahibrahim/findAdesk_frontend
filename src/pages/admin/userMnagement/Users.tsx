@@ -1,20 +1,71 @@
 import Header from '@/components/admin/Header'
 import Navbar from '@/components/admin/Navbar'
-import UserTable from './UserTable'
 import AdminSearch from '@/components/admin/AdminSearch';
 import { Search } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import ListingTable from '@/components/admin/ListingTable';
+import { blockUser, getUsers } from '@/services/api/admin';
+import { toast } from 'sonner';
+import Pagination from '@/components/generic/Pagination';
+
+interface User {
+  _id: string;
+  status: string;
+  name: string;
+  email: string;
+  isBlocked: boolean
+}
 
 
 const Users = () => {
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const debouncedSearch = AdminSearch(search, 500)
 
+  const fetchUser = async () => {
+    try {
+      setLoading(true);
+      const response = await getUsers(search, page);
+      console.log(response)
+      if (response.status === 200) {
+        setUsers(response.data.data.users)
+        setTotalPages(response.data.data.totalPages)
+      }
+      setLoading(false);
+    } catch (error) {
+      toast.error("Something went wrong. Please try again later.")
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, [debouncedSearch, page]);
+
+
+  const handleBlock = async (userId: string) => {
+    try {
+      const response = await blockUser(userId)
+      if (response?.status === 200) {
+        setUsers(prevUsers =>
+          prevUsers.map(user =>
+            user._id === userId ? { ...user, isBlocked: !user.isBlocked } : user
+          )
+        );
+        toast.success(`User status has been updated successfully.`);
+      }
+
+    } catch (error) {
+      toast.error("Failed to update the user's status.")
+    }
+  }
+
   return (
-    <>
+    <div>
       <Navbar />
       <Header />
       <div className="p-14">
@@ -33,21 +84,23 @@ const Users = () => {
             </button>
           </div>
         </div>
-        <UserTable search={debouncedSearch} page={page} setTotalPages={setTotalPages} />
-        <div className="flex pl-64 justify-center gap-0 py-28 ">
-          <button
-            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-            disabled={page === 1}
-            className="px-3 py-1 border rounded-md hover:bg-gray-50">Prev</button>
-          <button className="px-3 py-1 border rounded-md bg-blue-50 text-blue-600">{page}</button>
-          <button className="px-3 py-1 border rounded-md hover:bg-gray-50">{page+1}</button>
-          <button
-            onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-            disabled={page === totalPages}
-            className="px-3 py-1 border rounded-md hover:bg-gray-50">Next</button>
-        </div>
+        
+        <ListingTable data={users}
+          loading={loading}
+          search={debouncedSearch}
+          page={page}
+          totalPages={totalPages}
+          handleBlock={handleBlock}
+          isUser={true}
+        />
+
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          setPage={setPage}
+        />
       </div>
-    </>
+    </div>
   )
 }
 

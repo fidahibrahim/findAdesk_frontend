@@ -39,13 +39,7 @@ const ViewDetails = () => {
     const fetchData = async (workspaceId: string) => {
       try {
         const response = await viewDetails(workspaceId)
-
-        console.log(response, "resssssss")
-
         if (response.status === 200) {
-
-
-
           if (Array.isArray(response.data.aminities) && response.data.aminities.length === 1 && typeof response.data.aminities[0] === "string") {
             try {
               response.data.amenities = JSON.parse(response.data.aminities[0]);
@@ -61,7 +55,6 @@ const ViewDetails = () => {
               ? response.data.workspaceRules.split(",").map((rule: string) => rule.trim())
               : [];
           }
-
           setWorkspace(response.data)
         }
       } catch (error) {
@@ -128,7 +121,9 @@ const ViewDetails = () => {
             <p className="text-gray-700 text-base my-4">{workspace.spaceDescription}</p>
             <div className="border-t border-gray-200 pt-4">
               <h3 className="text-gray-800 text-base font-bold">Address</h3>
-              <p className="text-gray-700 text-base">Kkkanjeri, calicut, kerala</p>
+              <p className="text-gray-700 text-base">
+                {workspace.place}, {workspace.street},  {workspace.state}
+              </p>
             </div>
             <div className="border-t border-gray-200 pt-4">
               <h3 className="text-gray-800 text-base font-bold">Availability</h3>

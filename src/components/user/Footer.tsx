@@ -36,13 +36,13 @@ const Footer = () => {
 
         {/* Footer Links */}
         <div className="flex space-x-6 text-sm">
-          <a href="#" className="text-gray-600 hover:text-gray-800 transition-colors">
+          <a href="/aboutUs" className="text-gray-600 hover:text-gray-800 transition-colors">
             About Us
           </a>
-          <a href="#" className="text-gray-600 hover:text-gray-800 transition-colors">
+          <a href="/contactUs" className="text-gray-600 hover:text-gray-800 transition-colors">
             Contact Us
           </a>
-          <a href="#" className="text-gray-600 hover:text-gray-800 transition-colors">
+          <a href="/termsAndConditions" className="text-gray-600 hover:text-gray-800 transition-colors">
             Terms & Conditions
           </a>
         </div>

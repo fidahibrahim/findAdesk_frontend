@@ -11,7 +11,7 @@ import { loginResponse } from "@/interface/user/loginResponse";
 export interface WorkspaceResponse {
     success: boolean;
     message: string;
-    data?: any; 
+    data?: any;
 }
 
 export const signUp = async (
@@ -31,19 +31,19 @@ export const verifyOtp = async (
     otp: string
 ): Promise<AxiosResponse<SignUpResponse> | undefined> => {
     try {
-      const response = await Api.post(ownerEndpoints.verifyOtp, { email, otp })  
-      return response
+        const response = await Api.post(ownerEndpoints.verifyOtp, { email, otp })
+        return response
     } catch (error) {
         apiHandler(error)
         return Promise.reject()
     }
 }
 
-export const resendOtp = async(
+export const resendOtp = async (
     email: string
-): Promise<AxiosResponse <void> | undefined > => {
+): Promise<AxiosResponse<void> | undefined> => {
     try {
-        const response = await Api.post(ownerEndpoints.resendOtp,{ email })
+        const response = await Api.post(ownerEndpoints.resendOtp, { email })
         return response
     } catch (error) {
         apiHandler(error)
@@ -51,13 +51,13 @@ export const resendOtp = async(
     }
 }
 
-export const login = async(
+export const login = async (
     ownerCredentials: loginInterface
-): Promise <AxiosResponse<loginResponse> | undefined> => {
+): Promise<AxiosResponse<loginResponse> | undefined> => {
     try {
-        const response = await Api.post(ownerEndpoints.login,  ownerCredentials )
+        const response = await Api.post(ownerEndpoints.login, ownerCredentials)
         console.log(response);
-        
+
         return response
     } catch (error) {
         apiHandler(error)
@@ -65,7 +65,7 @@ export const login = async(
     }
 }
 
-export const ownerLogout = async (): Promise<AxiosResponse<unknown>|undefined> => {
+export const ownerLogout = async (): Promise<AxiosResponse<unknown> | undefined> => {
     try {
         const response = await Api.post(ownerEndpoints.logout)
         return response
@@ -75,9 +75,9 @@ export const ownerLogout = async (): Promise<AxiosResponse<unknown>|undefined> =
     }
 }
 
-export const workspaceRegister = async ( workspaceData: FormData ): Promise<AxiosResponse<WorkspaceResponse>> => {
+export const workspaceRegister = async (workspaceData: FormData): Promise<AxiosResponse<WorkspaceResponse>> => {
     try {
-        workspaceData.forEach((data)=>console.log(data))
+        workspaceData.forEach((data) => console.log(data))
 
         const response = await Api.post(ownerEndpoints.register, workspaceData, {
             headers: {
@@ -91,10 +91,14 @@ export const workspaceRegister = async ( workspaceData: FormData ): Promise<Axio
     }
 }
 
-export const listWorkspaces = async () => {
+export const listWorkspaces = async (search: string, page: number) => {
     try {
-        const response = await Api.get(ownerEndpoints.listWorkspaces)
-        return response
+        return await Api.get(ownerEndpoints.listWorkspaces, {
+            params: {
+                search,
+                page,
+            },
+        })
     } catch (error) {
         apiHandler(error)
         return Promise.reject()

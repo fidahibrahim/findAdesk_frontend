@@ -30,6 +30,7 @@ export const adminLogout = async (): Promise<AxiosResponse<unknown> | undefined>
 }
 
 export const getUsers = async (search: string, page: number) => {
+    
     try {
         return await Api.get(adminEndpoints.users, {
             params: {
@@ -74,9 +75,15 @@ export const blockOwner = async (ownerId: string) => {
     }
 }
 
-export const getWorkspaces = async () => {
+export const getWorkspaces = async (search: string, page: number, filter: string|undefined) => {
     try {
-        return await Api.get(adminEndpoints.workspaces)
+        return await Api.get(adminEndpoints.workspaces, {
+            params: {
+                search,
+                page,
+                filter
+            },
+        })
     } catch (error) {
         apiHandler(error)
     }

@@ -7,8 +7,8 @@ import WorkspaceTable from './workspaceTable';
 import { Link } from 'react-router-dom';
 const Workspace = () => {
     const [search, setSearch] = useState('')
-    const [page, setPage] = useState(1)
-    const [totalPages, setTotalPages] = useState(1)
+    const [page, setPage] = useState<number>(1)
+    const [totalPages, setTotalPages] = useState<number>(1)
 
     const debouncedSearch = AdminSearch(search, 500)
     return (
@@ -43,7 +43,7 @@ const Workspace = () => {
                             </button>
                         </div>
                     </div>
-                    <WorkspaceTable />
+                    <WorkspaceTable search={debouncedSearch} page={page} setTotalPages={setTotalPages} />
                     <div className="flex pl-64 justify-center gap-0 py-28 ">
                         <button
                             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}

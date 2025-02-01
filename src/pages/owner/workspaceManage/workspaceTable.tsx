@@ -1,10 +1,12 @@
 import { workspaceRes } from "@/interface/owner/WorkspaceRegisterValues";
+import { UserTableProps } from "@/pages/admin/userMnagement/UserTable";
 import { listWorkspaces } from "@/services/api/owner";
 import handleError from "@/utils/errorHandler";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const WorkspaceTable = () => {
+const WorkspaceTable: React.FC<UserTableProps> = ({ search, page, setTotalPages })  => {
+
     const [workspaces, setWorkspaces] = useState<workspaceRes[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -17,9 +19,12 @@ const WorkspaceTable = () => {
     useEffect(() => {
         const fetchWorkspaces = async () => {
             try {
-                const response = await listWorkspaces()
+                const response = await listWorkspaces(search, page)
+                console.log("response from back ", response)
+                console.log("API Response Total Pages:", response.data.data.totalPages);
                 if(response.status === 200){
-                    setWorkspaces(response.data.data)
+                    setWorkspaces(response.data.data.workspaces)
+                    setTotalPages(response.data.data.totalPages)
                 }
             } catch (error) {
                 handleError(error)
@@ -28,7 +33,7 @@ const WorkspaceTable = () => {
             }
         }
         fetchWorkspaces()
-    },[])
+    },[search, page])
 
 
     return (
@@ -61,7 +66,7 @@ const WorkspaceTable = () => {
                         ) : (
                             workspaces.map((workspace, index) => (
                                 <tr key={workspace._id} className="bg-blue-50">
-                                    <td className="py-3 pl-10 pr-2 text-sm">{index + 1}</td>
+                                    <td className="py-3 pl-10 pr-2 text-sm">{(page - 1) * 6 + index + 1}</td>
                                     <td className="py-3 px-16 text-sm">{workspace.workspaceName}</td>
                                     <td className="py-3 px-12 text-sm">₹ {workspace.pricePerHour}</td>
                                     <td className="py-3 px-11 text-sm">{workspace.status}</td>

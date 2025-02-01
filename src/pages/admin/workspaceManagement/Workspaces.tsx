@@ -4,7 +4,6 @@ import AdminSearch from '@/components/admin/AdminSearch';
 import { useState } from "react";
 import { Search } from "lucide-react";
 import WorkspaceTable from "./WorkspaceTable";
-import { string } from "yup";
 
 
 const Workspaces = () => {
@@ -37,27 +36,45 @@ const Workspaces = () => {
                         </div>
                     </div>
                     <div className="flex px-72 space-x-4 mb-6">
-                    <button 
-                        onClick={() => setFilter('approved')}
-                        className={`px-6 py-2 border rounded-md focus:outline-none transition-colors
-                            ${filter === 'approved' 
-                                ? 'bg-blue-50 border-blue-200 text-blue-600' 
-                                : 'hover:bg-gray-50'}`}
-                    >
-                        ✓ Approved
-                    </button>
-                    <button 
-                        onClick={() => setFilter('rejected')}
-                        className={`px-6 py-2 border rounded-md focus:outline-none transition-colors
-                            ${filter === 'rejected' 
-                                ? 'bg-blue-50 border-blue-200 text-blue-600' 
-                                : 'hover:bg-gray-50'}`}
-                    >
-                        ✕ Rejected
-                    </button>
-                </div>
+                        <button
+                            onClick={() => setFilter('all')}
+                            className={`px-6 py-2 border rounded-md focus:outline-none transition-colors
+                                ${filter === 'all'
+                                    ? 'bg-blue-50 border-blue-200 text-blue-600'
+                                    : 'hover:bg-gray-50'}`}
+                        >
+                            All
+                        </button>
+                        <button
+                            onClick={() => setFilter('approved')}
+                            className={`px-6 py-2 border rounded-md focus:outline-none transition-colors
+                            ${filter === 'approved'
+                                    ? 'bg-blue-50 border-blue-200 text-blue-600'
+                                    : 'hover:bg-gray-50'}`}
+                        >
+                            ✓ Approved
+                        </button>
+                        <button
+                            onClick={() => setFilter('rejected')}
+                            className={`px-6 py-2 border rounded-md focus:outline-none transition-colors
+                            ${filter === 'rejected'
+                                    ? 'bg-blue-50 border-blue-200 text-blue-600'
+                                    : 'hover:bg-gray-50'}`}
+                        >
+                            ✕ Rejected
+                        </button>
+                        <button
+                            onClick={() => setFilter('pending')}
+                            className={`px-6 py-2 border rounded-md focus:outline-none transition-colors
+                                ${filter === 'pending'
+                                    ? 'bg-blue-50 border-blue-200 text-blue-600'
+                                    : 'hover:bg-gray-50'}`}
+                        >
+                            ! Pending
+                        </button>
+                    </div>
 
-                    <WorkspaceTable search={debouncedSearch} page={page} setTotalPages={setTotalPages} />
+                    <WorkspaceTable search={debouncedSearch} page={page} setTotalPages={setTotalPages} filter={filter} />
                     <div className="flex pl-64 justify-center gap-0 py-28 ">
                         <button
                             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}

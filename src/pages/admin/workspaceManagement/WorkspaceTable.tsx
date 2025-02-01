@@ -10,33 +10,38 @@ import { ChevronDown } from "lucide-react"
 import { getWorkspaces, updateStatus } from '@/services/api/admin';
 import handleError from '@/utils/errorHandler';
 import { workspaceRes } from '@/interface/owner/WorkspaceRegisterValues';
-import { useNavigate } from 'react-router-dom';
+import { UserTableProps } from '../userMnagement/UserTable';
+import { toast } from 'sonner';
 
-const WorkspaceTable = () => {
+const WorkspaceTable: React.FC<UserTableProps> = ({ search, page, setTotalPages, filter }) => {
+
     const [workspaces, setWorkspaces] = useState([]);
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
 
     const fetchData = async () => {
         try {
-            const response = await getWorkspaces()
-            console.log(response, "ressssssss")
+            setLoading(true);
+            const response = await getWorkspaces(search, page, filter)
             if (response?.status === 200) {
-                setWorkspaces(response.data)
+                setWorkspaces(response.data.data.workspaces)
+                setTotalPages(response.data.data.totalPages)
             }
+            setLoading(false);
         } catch (error) {
+            toast.error("Something went wrong. Please try again later.")
             handleError(error)
+            setLoading(false);
         }
     }
 
     const handleStatusUpdate = async (workspaceId: string | undefined, status: string) => {
-        console.log(workspaceId, "idddd"),
         setLoading(true);
         try {
             const response = await updateStatus(workspaceId, status)
-            console.log(response, "responsee");
-            if(response?.status==200){
+            if (response?.status == 200) {
                 fetchData()
+                toast.success("Status updated Successfully")
             }
         } catch (error) {
             handleError(error);
@@ -47,7 +52,7 @@ const WorkspaceTable = () => {
 
     useEffect(() => {
         fetchData()
-    }, [])
+    }, [search, page, filter])
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -82,62 +87,69 @@ const WorkspaceTable = () => {
                         </th>
                     </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                    {workspaces.map((workspace: workspaceRes, index: number) => (
-                        <tr key={workspace._id} className="hover:bg-gray-50">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {index + 1}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {workspace.workspaceMail}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {workspace.workspaceName}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(workspace.status)}`}>
-                                    {workspace.status}
-                                </span>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <div className="relative">
-                                    {workspace.status === 'pending' ? (
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    disabled={loading}
-                                                    className="w-32"
-                                                >
-                                                    Actions
-                                                    <ChevronDown className="ml-2 h-4 w-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent>
-                                                <DropdownMenuItem
-                                                    onClick={() => handleStatusUpdate(workspace._id, "Approved")}
-                                                >
-                                                    Approve
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem
-                                                    onClick={() => handleStatusUpdate(workspace._id, "Rejected")}
-                                                >
-                                                    Reject
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    ) : (
-                                        <span className="text-gray-500 text-sm">
-                                            Already Updated
-                                        </span>
-                                    )}
+                {workspaces.length === 0 ? (
+                    <div className="px-6 py-4 text-center text-sm text-gray-500">
+                        No workspaces found matching your filter.
+                    </div>
+                ) : (
+                    <tbody className="bg-white divide-y divide-gray-200">
+                        {workspaces.map((workspace: workspaceRes, index: number) => (
+                            <tr key={workspace._id} className="hover:bg-gray-50">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {(page - 1) * 6 + index + 1}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {workspace.workspaceMail}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {workspace.workspaceName}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(workspace.status)}`}>
+                                        {workspace.status}
+                                    </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div className="relative">
+                                        {workspace.status === 'pending' ? (
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        disabled={loading}
+                                                        className="w-32"
+                                                    >
+                                                        Actions
+                                                        <ChevronDown className="ml-2 h-4 w-4" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent>
+                                                    <DropdownMenuItem
+                                                        onClick={() => handleStatusUpdate(workspace._id, "Approved")}
+                                                    >
+                                                        Approve
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        onClick={() => handleStatusUpdate(workspace._id, "Rejected")}
+                                                    >
+                                                        Reject
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        ) : (
+                                            <span className="text-gray-500 text-sm">
+                                                Already Updated
+                                            </span>
+                                        )}
 
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                )}
+
             </table>
         </div>
     );

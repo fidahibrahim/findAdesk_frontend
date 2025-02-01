@@ -8,6 +8,9 @@ import WithoutAuth from "@/hocs/user/WithoutAuth"
 import ForgotPassword from "@/components/generic/ForgotPasswordForm"
 import ProfilePage from "@/pages/user/profile/Profile"
 import WithAuth from "@/hocs/user/WithAuth"
+import AboutUs from "@/pages/user/static/AboutUs"
+import ContactUs from "@/pages/user/static/ContactUs"
+import TermsAndConditions from "@/pages/user/static/TermsAndConditions"
 
 
 const UserRouter = () => {
@@ -21,6 +24,9 @@ const UserRouter = () => {
                 < Route path="/forgotPassword" element={<ForgotPassword />} />
                 < Route path="/resetPassword/:token" element={<ChangePassword />} />
                 <Route path="/profile" element={<WithAuth component={ProfilePage} />} />
+                <Route path="/aboutUs" element={<AboutUs/>} />
+                <Route path="/contactUs" element={<ContactUs/>} />
+                <Route path="/termsAndConditions" element={<TermsAndConditions/>} />
             </Routes>
         </>
     )

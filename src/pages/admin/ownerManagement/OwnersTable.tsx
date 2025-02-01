@@ -16,7 +16,6 @@ interface Owner {
     isBlocked: boolean
 }
 
-
 const OwnersTable: React.FC<OwnersTableProps> = ({ search, page, setTotalPages }) => {
     const [owners, setOwners] = useState<Owner[]>([])
     const [loading, setLoading] = useState(false);
@@ -44,8 +43,12 @@ const OwnersTable: React.FC<OwnersTableProps> = ({ search, page, setTotalPages }
     const handleBlock = async (ownerId: string) => {
         try {
             const response = await blockOwner(ownerId)
-            if(response?.status == 200){
-                fetchOwner()
+            if (response?.status == 200) {
+                setOwners(prevOwners =>
+                    prevOwners.map(owner =>
+                        owner._id === ownerId ? { ...owner, isBlocked: !owner.isBlocked } : owner
+                    )
+                );
                 toast.success(`Owner status has been updated successfully.`);
             }
         } catch (error) {
@@ -81,7 +84,7 @@ const OwnersTable: React.FC<OwnersTableProps> = ({ search, page, setTotalPages }
                                             key={owner._id}
                                             className={index % 2 === 1 ? 'bg-blue-50' : 'bg-white'}
                                         >
-                                            <td className="py-3 pl-10 pr-2 text-sm">{index + 1}</td>
+                                            <td className="py-3 pl-10 pr-2 text-sm">{(page - 1) * 6 + index + 1}</td>
                                             <td className="py-3 px-4 text-sm">{owner.name}</td>
                                             <td className="py-3 px-4 text-sm">{owner.email}</td>
                                             <td className="py-3 px-4">

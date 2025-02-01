@@ -1,10 +1,21 @@
-import { registrationSchema } from '@/validation/formValidation';
+import { changePassword } from '@/services/api/user';
+import { changePassSchema } from '@/validation/formValidation';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { useParams } from 'react-router-dom';
+
+export interface changePass {
+    password: string
+}
 
 const ChangePassword = () => {
 
-    const handleSubmit = () => {
-        // Add your password reset logic here
+    const { token } = useParams()      
+
+    const handleSubmit = async (values: changePass) => {
+        console.log(values, token)
+        const response = await changePassword(token, values.password)
+        console.log(response,"ressss")
+
     };
     return (
         <>
@@ -23,7 +34,7 @@ const ChangePassword = () => {
                                 password: '',
                                 confirmPassword: '',
                             }}
-                            validationSchema={registrationSchema}
+                            validationSchema={changePassSchema}
                             onSubmit={handleSubmit}
                         >
                             {({ isSubmitting }) => (

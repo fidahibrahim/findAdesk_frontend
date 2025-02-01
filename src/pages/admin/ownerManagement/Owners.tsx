@@ -2,15 +2,66 @@ import Header from '@/components/admin/Header'
 import Navbar from '@/components/admin/Navbar'
 import AdminSearch from '@/components/admin/AdminSearch';
 import { Search } from 'lucide-react';
-import { useState } from 'react';
-import OwnersTable from './OwnersTable';
+import { useEffect, useState } from 'react';
+import Pagination from '@/components/generic/Pagination';
+import ListingTable from '@/components/admin/ListingTable';
+import { blockOwner, getOwners } from '@/services/api/admin';
+import { toast } from 'sonner';
+
+interface Owner {
+    _id: string
+    status: string
+    name: string
+    email: string
+    isBlocked: boolean
+}
 
 const Owners = () => {
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
+    const [owners, setOwners] = useState<Owner[]>([])
+    const [loading, setLoading] = useState(false);
 
     const debouncedSearch = AdminSearch(search, 500)
+
+    const fetchOwner = async () => {
+        try {
+            setLoading(true);
+            const response = await getOwners(search, page)
+            if (response?.status == 200) {
+                setOwners(response.data.data.owners)
+                setTotalPages(response.data.data.totalPages)
+            }
+            setLoading(false)
+        } catch (error) {
+            console.log(error);
+            toast.error("Something went wrong. Please try again later.")
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchOwner();
+    }, [debouncedSearch, page]);
+
+    const handleBlock = async (ownerId: string) => {
+        try {
+            const response = await blockOwner(ownerId)
+            if (response?.status == 200) {
+                setOwners(prevOwners =>
+                    prevOwners.map(owner =>
+                        owner._id === ownerId ? { ...owner, isBlocked: !owner.isBlocked } : owner
+                    )
+                );
+                toast.success(`Owner status has been updated successfully.`);
+            }
+        } catch (error) {
+            toast.error("Failed to update the user's status.")
+        }
+    }
+
+
     return (
         <>
             <div>
@@ -32,19 +83,22 @@ const Owners = () => {
                             </button>
                         </div>
                     </div>
-                    <OwnersTable search={debouncedSearch} page={page} setTotalPages={setTotalPages} />
-                    <div className="flex pl-64 justify-center gap-0 py-28 ">
-                        <button
-                            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                            disabled={page === 1}
-                            className="px-3 py-1 border rounded-md hover:bg-gray-50">Prev</button>
-                        <button className="px-3 py-1 border rounded-md bg-blue-50 text-blue-600">{page}</button>
-                        <button className="px-3 py-1 border rounded-md hover:bg-gray-50">{page + 1}</button>
-                        <button
-                            onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-                            disabled={page === totalPages}
-                            className="px-3 py-1 border rounded-md hover:bg-gray-50">Next</button>
-                    </div>
+
+                    {/* <OwnersTable search={debouncedSearch} page={page} setTotalPages={setTotalPages} /> */}
+                    <ListingTable data={owners}
+                        loading={loading}
+                        search={debouncedSearch}
+                        page={page}
+                        totalPages={totalPages}
+                        handleBlock={handleBlock}
+                        isUser={true}
+                    />
+
+                    <Pagination
+                        page={page}
+                        totalPages={totalPages}
+                        setPage={setPage}
+                    />
                 </div>
             </div>
         </>

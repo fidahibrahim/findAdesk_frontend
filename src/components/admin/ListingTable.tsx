@@ -1,63 +1,16 @@
-import { blockUser, getUsers } from '@/services/api/admin';
-import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
 
-interface User {
-    _id: string;
-    status: string;
-    name: string;
-    email: string;
-    isBlocked: boolean
-}
-
-export interface UserTableProps {
+interface TableProps<T> {
+    data: T[];
+    loading: boolean;
     search: string;
     page: number;
-    setTotalPages: React.Dispatch<React.SetStateAction<number>>;
-    filter?: string 
+    totalPages: number;
+    handleBlock: (id: string) => void;
+    isUser: boolean;
 }
 
-const UserTable: React.FC<UserTableProps> = ({ search, page, setTotalPages }) => {
-
-    const [users, setUsers] = useState<User[]>([]);
-    const [loading, setLoading] = useState(false);
-
-    const fetchUser = async () => {
-        try {
-            setLoading(true);
-            const response = await getUsers(search, page);
-            if (response.status === 200) {
-                setUsers(response.data.users)
-                setTotalPages(response.data.totalPages)
-            }
-            setLoading(false);
-        } catch (error) {
-            toast.error("Something went wrong. Please try again later.")
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchUser();
-    }, [search, page]);
-
-
-    const handleBlock = async (userId: string) => {
-        try {
-            const response = await blockUser(userId)
-            if (response?.status === 200) {
-                setUsers(prevUsers =>
-                    prevUsers.map(user =>
-                        user._id === userId ? { ...user, isBlocked: !user.isBlocked } : user
-                    )
-                );
-                toast.success(`User status has been updated successfully.`);
-            }
-
-        } catch (error) {
-            toast.error("Failed to update the user's status.")
-        }
-    }
+const ListingTable = <T extends { _id: string; name: string; email: string; isBlocked: boolean }>
+ ({ data, loading, page, handleBlock  }: TableProps<T>)  => {
 
     return (
         <div className="bg-white rounded-lg ml-64 shadow-lg">
@@ -75,30 +28,30 @@ const UserTable: React.FC<UserTableProps> = ({ search, page, setTotalPages }) =>
                             </tr>
                         </thead>
                         <tbody>
-                            {users.length === 0 ? (
+                            {data.length === 0 ? (
                                 <tr>
                                     <td colSpan={6} className="text-center py-8 text-gray-600">
-                                        No users found
+                                        No data found
                                     </td>
                                 </tr>
                             ) : (
-                                users.map((user, index) => (
+                                data.map((item, index) => (
                                     <tr
-                                        key={user._id}
+                                        key={item._id}
                                         className={index % 2 === 1 ? 'bg-blue-50' : 'bg-white'}
                                     >
                                         <td className="py-3 pl-10 pr-2 text-sm">{(page - 1) * 6 + index + 1}</td>
-                                        <td className="py-3 px-4 text-sm">{user.name}</td>
-                                        <td className="py-3 px-4 text-sm">{user.email}</td>
+                                        <td className="py-3 px-4 text-sm">{item.name}</td>
+                                        <td className="py-3 px-4 text-sm">{item.email}</td>
                                         <td className="py-3 px-4">
                                             <button
-                                                className={`px-4 py-1 rounded-md text-sm ${user.isBlocked
+                                                className={`px-4 py-1 rounded-md text-sm ${item.isBlocked
                                                     ? 'bg-blue-100 text-blue-600 hover:bg-blue-200'
                                                     : 'bg-red-100 text-red-600 hover:bg-red-200'
                                                     }`}
-                                                onClick={() => handleBlock(user._id)}
+                                                onClick={() => handleBlock(item._id)}
                                             >
-                                                {user.isBlocked
+                                                {item.isBlocked
                                                     ? 'Unblock'
                                                     : 'Block'
                                                 }
@@ -115,4 +68,4 @@ const UserTable: React.FC<UserTableProps> = ({ search, page, setTotalPages }) =>
     );
 };
 
-export default UserTable;
+export default ListingTable;
