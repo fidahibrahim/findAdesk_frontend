@@ -2,6 +2,20 @@ import { SUPPORTED_IMAGE_FORMATS } from "@/components/owner/ErrorWrapper";
 import * as yup from "yup";
 import dayjs from 'dayjs';
 
+
+export type NewImage = {
+  file: File;
+  preview: string;
+  isExisting?: false;
+};
+
+export type ExistingImage = {
+  preview: string;
+  isExisting: true;
+};
+
+type WorkspaceImage = NewImage | ExistingImage;
+
 export const registrationSchema = yup.object().shape({
   username: yup.string()
     .matches(
@@ -152,37 +166,31 @@ export const workspaceRegisterSchema = yup.object().shape({
     .required('Amenities are required'),
 
   images: yup.array()
-    .min(2, 'Minimum 2 images required')
+    // .min(2, 'Minimum 2 images required')
     .max(5, 'Maximum 5 images allowed')
     .of(
-      yup.object().shape({
-        file: yup.mixed()
-          .required('File is required')
-          .test('fileFormat', 'Unsupported file format. Only JPG, JPEG and PNG are allowed',
-            (value: any) => {
-              if (!value || !value.type) return false;
-              return SUPPORTED_IMAGE_FORMATS.includes(value.type);
-            }
-          )
-          .test('fileSize', 'File size must be less than 5MB',
-            (value: any) => {
-              if (!value || !value.size) return false;
-              return value.size <= 5 * 1024 * 1024;
-            }
-          ),
-        preview: yup.string()
-          .required('Preview URL is required')
-          .test('isValidPreview', 'Invalid preview URL',
-            (value: string) => {
-              if (!value) return false;
-              try {
-                new URL(value);
-                return true;
-              } catch {
-                return false;
-              }
-            }
-          )
+      yup.mixed().test('image-validation', 'Invalid image format or size', 
+        function (value: any):value is WorkspaceImage {
+        if (!value) return false;
+
+        // For existing images, only validate the preview URL
+        if ('isExisting' in value && value.isExisting) {
+          try {
+            new URL(value.preview);
+            return true;
+          } catch {
+            return false;
+          }
+        }
+
+        // For new images, validate file type and size
+        if ('file' in value && value.file) {
+          const isValidFormat = SUPPORTED_IMAGE_FORMATS.includes(value.file.type);
+          const isValidSize = value.file.size <= 5 * 1024 * 1024;
+          return isValidFormat && isValidSize;
+        }
+
+        return false;
       })
     )
     .required('Images are required')

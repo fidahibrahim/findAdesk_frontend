@@ -1,24 +1,23 @@
 import { Card, CardContent } from "@/components/ui/card";
 import RegistrationForm from "./RegistrationForm";
+import Header from "@/components/owner/Header";
+import Navbar from "@/components/owner/Navbar";
 
 const Registration = () => {
     return (
-        <div className="min-h-screen bg-white py-12 px-8">
-            <div className="max-w-[900px] mx-auto">
-                <div className="text-center mb-3">
-                    <img
-                        src="/user/logo.png"
-                        alt="Logo"
-                        className="h-10 w-auto mx-auto"
-                    />
+        <>
+            <Header />
+            <Navbar />
+            <div className="min-h-scree py-12">
+                <div className="max-w-[950px] ml-96">
+                    <Card className="bg-gray-100 mb-12">
+                        <CardContent >
+                            <RegistrationForm  />
+                        </CardContent>
+                    </Card>
                 </div>
-                <Card className="bg-gray-100 mb-12">
-                    <CardContent className="px-16 py-8">
-                        <RegistrationForm />
-                    </CardContent>
-                </Card>
             </div>
-        </div>
+        </>
     );
 };
 

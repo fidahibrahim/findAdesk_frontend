@@ -114,3 +114,36 @@ export const viewDetails = async (workspaceId: string) => {
         return Promise.reject()
     }
 }
+
+export const viewEditWorkspace = async (workspaceId: string) => {
+    try {
+        const response = await Api.get(`${ownerEndpoints.viewDetails}?workspaceId=${workspaceId}`)
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const editWorkspace = async (workspaceId: string, formData: FormData) => {
+    try {
+        return await Api.put(`${ownerEndpoints.editWorkspace}?workspaceId=${workspaceId}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const deleteWorkspace = async (workspaceId: string | undefined) => {
+    try {
+        const response = await Api.delete(`${ownerEndpoints.deleteWorkspace}?workspaceId=${workspaceId}`)
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}

@@ -1,5 +1,7 @@
 
 export interface FormValues {
+    _id?: string;
+    ownerId?: string;
     workspaceName: string;
     workspaceMail: string;
     workspaceType: string;

@@ -24,9 +24,9 @@ const Header = () => {
 
     return (
         <>
-            <header className="bg-white shadow-md ">
-                <div className="flex justify-between items-center py-8">
-                    <div className="relative ml-auto mr-8  ">
+            <header className=" bg-white shadow-md ">
+                <div className="flex py-8">
+                    <div className="relative ml-auto mr-8">
                         <button
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                             className="flex items-center space-x-2 text-gray-700 hover:text-gray-900"

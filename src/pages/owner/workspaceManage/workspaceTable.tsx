@@ -1,28 +1,32 @@
 import { workspaceRes } from "@/interface/owner/WorkspaceRegisterValues";
 import { UserTableProps } from "@/pages/admin/userMnagement/UserTable";
-import { listWorkspaces } from "@/services/api/owner";
+import { deleteWorkspace, listWorkspaces } from "@/services/api/owner";
 import handleError from "@/utils/errorHandler";
+import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Modal } from 'antd';
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
-const WorkspaceTable: React.FC<UserTableProps> = ({ search, page, setTotalPages })  => {
+const WorkspaceTable: React.FC<UserTableProps> = ({ search, page, setTotalPages }) => {
 
     const [workspaces, setWorkspaces] = useState<workspaceRes[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
     const navigate = useNavigate()
 
-    const handleVievClick = (workspaceId: string|undefined) =>{
-        navigate("/owner/viewDetails",{ state:{ workspaceId: workspaceId } })
+
+    const { confirm } = Modal;
+
+    const handleVievClick = (workspaceId: string | undefined) => {
+        navigate("/owner/viewDetails", { state: { workspaceId: workspaceId } })
     }
 
     useEffect(() => {
         const fetchWorkspaces = async () => {
             try {
                 const response = await listWorkspaces(search, page)
-                console.log("response from back ", response)
-                console.log("API Response Total Pages:", response.data.data.totalPages);
-                if(response.status === 200){
+                if (response.status === 200) {
                     setWorkspaces(response.data.data.workspaces)
                     setTotalPages(response.data.data.totalPages)
                 }
@@ -33,8 +37,41 @@ const WorkspaceTable: React.FC<UserTableProps> = ({ search, page, setTotalPages 
             }
         }
         fetchWorkspaces()
-    },[search, page])
+    }, [search, page])
 
+    const handleDelete = async (workspaceId: string | undefined) => {
+        try {
+            const response = await deleteWorkspace(workspaceId)
+            if (response) {
+                const updatedWorkspaces = workspaces.filter(workspace => workspace._id !== workspaceId);
+                setWorkspaces(updatedWorkspaces);
+            }
+            toast.success("Your workspace has been deleted.")
+        } catch (error) {
+            handleError(error)
+        }
+    }
+
+    const showDeleteConfirm = (workspaceId: string | undefined) => {
+        confirm({
+            title: "Are you sure you want to delete this workspace?",
+            icon: <ExclamationCircleFilled />,
+            content: "This action cannot be undone.",
+            okText: "Yes, Delete",
+            okType: "danger",
+            cancelText: "No",
+            onOk() {
+                handleDelete(workspaceId);
+            },
+            onCancel() {
+                console.log("Delete action cancelled.");
+            },
+        });
+    };
+
+    const handleEdit = (workspaceId: string | undefined) => {
+        navigate("/owner/editWorkspace", { state: { workspaceId: workspaceId } })
+    }
 
     return (
         <div className="bg-white rounded-lg ml-64 shadow-lg">
@@ -73,16 +110,18 @@ const WorkspaceTable: React.FC<UserTableProps> = ({ search, page, setTotalPages 
                                     <td className="py-3 px-7">
                                         <button
                                             className="bg-blue-100 text-blue-600 hover:bg-blue-200 mr-3 py-1 px-3 rounded"
+                                            onClick={() => handleEdit(workspace._id)}
                                         >
                                             Edit
                                         </button>
                                         <button
                                             className="bg-blue-100 text-blue-600 hover:bg-blue-200 py-1 px-3 rounded"
+                                            onClick={() => showDeleteConfirm(workspace._id)}
                                         >
                                             Delete
                                         </button>
                                     </td>
-                                    <td onClick={()=>handleVievClick(workspace._id)} className="py-3 px-10 text-sm text-blue-500 underline"> View </td>
+                                    <td onClick={() => handleVievClick(workspace._id)} className="py-3 px-10 text-sm text-blue-500 underline"> View </td>
                                 </tr>
                             ))
                         )}

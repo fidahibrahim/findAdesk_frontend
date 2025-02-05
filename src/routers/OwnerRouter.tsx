@@ -6,6 +6,7 @@ import OwnerLogin from '@/pages/owner/auth/OwnerLogin'
 import OwnerDashboard from '@/pages/owner/dashboard/OwnerDashboard'
 import Otp from '@/pages/owner/Registration/Otp'
 import Register from '@/pages/owner/Registration/Register'
+import EditWorkspace from '@/pages/owner/workspaceManage/EditWorkspace'
 import Registration from '@/pages/owner/workspaceManage/Registration'
 import ViewDetails from '@/pages/owner/workspaceManage/ViewDetails'
 import Workspace from '@/pages/owner/workspaceManage/Workspace'
@@ -24,6 +25,7 @@ const OwnerRouter = () => {
         <Route path='/workspace' element={<WithAuth component={Workspace} />} />
         <Route path='/workspaceRegister' element={<WithAuth component={Registration} />} />
         <Route path='/viewDetails' element={<WithAuth component={ViewDetails} />} />
+        <Route path='/editWorkspace' element={<EditWorkspace/>} />
       </Routes>
     </>
   )

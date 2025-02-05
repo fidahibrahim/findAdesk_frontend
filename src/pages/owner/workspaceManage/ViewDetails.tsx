@@ -4,13 +4,13 @@ import handleError from '@/utils/errorHandler';
 import { useLocation } from 'react-router-dom';
 import Header from '@/components/owner/Header';
 import Navbar from '@/components/owner/Navbar';
-import { workspaceRes } from '@/interface/owner/WorkspaceRegisterValues';
+import { FormValues } from '@/interface/owner/WorkspaceRegisterValues';
 
 const ViewDetails = () => {
   const location = useLocation()
   const workspaceId = location.state.workspaceId
 
-  const [workspace, setWorkspace] = useState<workspaceRes | null>(null);
+  const [workspace, setWorkspace] = useState<FormValues | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -39,23 +39,24 @@ const ViewDetails = () => {
     const fetchData = async (workspaceId: string) => {
       try {
         const response = await viewDetails(workspaceId)
+        const data = response.data.data
         if (response.status === 200) {
-          if (Array.isArray(response.data.aminities) && response.data.aminities.length === 1 && typeof response.data.aminities[0] === "string") {
+          if (Array.isArray(data.aminities) && data.aminities.length === 1 && typeof data.aminities[0] === "string") {
             try {
-              response.data.amenities = JSON.parse(response.data.aminities[0]);
+              data.amenities = JSON.parse(data.aminities[0]);
             } catch {
-              response.data.amenities = [];
+              data.amenities = [];
             }
           } else {
-            response.data.amenities = [];
+            data.amenities = [];
           }
 
-          if (!Array.isArray(response.data.workspaceRules)) {
-            response.data.workspaceRules = response.data.workspaceRules
-              ? response.data.workspaceRules.split(",").map((rule: string) => rule.trim())
+          if (!Array.isArray(data.workspaceRules)) {
+            data.workspaceRules = data.workspaceRules
+              ? data.workspaceRules.split(",").map((rule: string) => rule.trim())
               : [];
           }
-          setWorkspace(response.data)
+          setWorkspace(data)
         }
       } catch (error) {
         handleError(error)
@@ -145,9 +146,7 @@ const ViewDetails = () => {
               <h6 className="text-gray-800 font-bold">*Rules specified</h6>
               <ul className="space-y-1 text-gray-700 text-base">
                 {workspace.workspaceRules && workspace.workspaceRules.length > 0 ? (
-                  workspace.workspaceRules.map((rule, index) => (
-                    <li key={index}>{rule}</li>
-                  ))
+                  workspace.workspaceRules
                 ) : (
                   <li>No rules specified</li>
                 )}
