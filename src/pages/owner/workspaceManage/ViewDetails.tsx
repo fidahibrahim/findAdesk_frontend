@@ -9,7 +9,7 @@ import { FormValues } from '@/interface/owner/WorkspaceRegisterValues';
 const ViewDetails = () => {
   const location = useLocation()
   const workspaceId = location.state.workspaceId
-
+  
   const [workspace, setWorkspace] = useState<FormValues | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -40,17 +40,9 @@ const ViewDetails = () => {
       try {
         const response = await viewDetails(workspaceId)
         const data = response.data.data
-        if (response.status === 200) {
-          if (Array.isArray(data.aminities) && data.aminities.length === 1 && typeof data.aminities[0] === "string") {
-            try {
-              data.amenities = JSON.parse(data.aminities[0]);
-            } catch {
-              data.amenities = [];
-            }
-          } else {
-            data.amenities = [];
-          }
 
+        if (response.status === 200) {
+          
           if (!Array.isArray(data.workspaceRules)) {
             data.workspaceRules = data.workspaceRules
               ? data.workspaceRules.split(",").map((rule: string) => rule.trim())

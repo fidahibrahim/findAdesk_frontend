@@ -36,14 +36,17 @@ const Header = () => {
 
     return (
         <div>
-            <header className="bg-gray-100 border-b border-gray-200 p-4">
+            <header className="bg-white/45 border-b border-gray-200 p-4">
                 <div className="container mx-auto flex items-center justify-between">
                     <div>
-                        <img
-                            src="/user/logo.png"
-                            alt="Logo"
-                            className="h-8 w-auto"
-                        />
+                        <Link
+                            to="/">
+                            <img
+                                src="/user/logo.png"
+                                alt="Logo"
+                                className="h-8 w-auto "
+                            />
+                        </Link>
                     </div>
 
                     <nav className="flex ml-56 space-x-6 text-[#0C5A8D]">

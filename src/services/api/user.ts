@@ -88,9 +88,9 @@ export const sendForgotEmail = async (email: string) => {
     }
 }
 
-export const changePassword = async (token: string|undefined, password: string) => {
+export const changePassword = async (token: string | undefined, password: string) => {
     try {
-        const response = await Api.post(userEndpoints.changePassword, {token, password})
+        const response = await Api.post(userEndpoints.changePassword, { token, password })
         return response
     } catch (error) {
         apiHandler(error)
@@ -111,6 +111,36 @@ export const contactService = async (values: ContactData) => {
 export const getProfile = async () => {
     try {
         const response = await Api.get(userEndpoints.getProfile)
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const fetchRecentWorkspaces = async () => {
+    try {
+        const response = await Api.get(userEndpoints.recentWorkspaces)
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const fetchFilterWorkspaces = async (filters: any) => {
+    try {
+        const response = await Api.post(userEndpoints.filterWorkspaces, filters);
+        return response;
+    } catch (error) {
+        apiHandler(error);
+        return Promise.reject(error);
+    }
+}
+
+export const workspaceDetails = async (workspaceId: string) => {
+    try {
+        const response = await Api.get(`${userEndpoints.workspaceDetails}?workspaceId=${workspaceId}`)
         return response
     } catch (error) {
         apiHandler(error)

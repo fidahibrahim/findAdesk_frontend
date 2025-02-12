@@ -40,13 +40,6 @@ const EditWorkspace = () => {
 
     const [newAmenity, setNewAmenity] = useState('');
 
-    const handleAddAmenity = (values: any, setFieldValue: any) => {
-        if (newAmenity.trim()) {
-            setFieldValue('amenities', [...values.amenities, newAmenity.trim()]);
-            setNewAmenity('');
-        }
-    };
-
     const handleImageChange = (
         event: React.ChangeEvent<HTMLInputElement>,
         setFieldValue: (field: string, value: any) => void,
@@ -80,8 +73,6 @@ const EditWorkspace = () => {
                 const response = await viewEditWorkspace(workspaceId)
                 const data = response.data.data
                 console.log(data, "data listed in the edit form")
-                const parsedAmenities = data.aminities ?
-                    JSON.parse(data.aminities[0]) : [];
 
                 const transformedImages: ExistingImage[] = data.images ?
                     data.images.map((url: string) => ({
@@ -92,12 +83,12 @@ const EditWorkspace = () => {
 
                 setWorkspaceData({
                     ...data,
-                    amenities: parsedAmenities,
                     images: transformedImages,
                     startTime: data.startTime ? dayjs(data.startTime) : null,
                     endTime: data.endTime ? dayjs(data.endTime) : null
                 })
             } catch (error) {
+                console.log(error)
                 handleError(error)
             }
         }
@@ -106,6 +97,7 @@ const EditWorkspace = () => {
 
 
     const handleSubmit = async (values: any, { isSubmitting }: any) => {
+        console.log(values, "values in handlesubmit")
         try {
             const formData = new FormData();
             (Object.keys(values) as (keyof FormValues)[]).forEach((key) => {
@@ -114,12 +106,19 @@ const EditWorkspace = () => {
                     if (value !== null && value !== undefined) {
                         if (key === 'startTime' || key === 'endTime') {
                             formData.append(key, value?.format('HH:mm') || '');
-                        } else {
+                        } else if (key === 'amenities') {
+                            formData.append(key, JSON.stringify(value));
+                        }
+                        else {
                             formData.append(key, typeof value === 'object' ? JSON.stringify(value) : String(value));
                         }
                     }
                 }
             });
+
+            const existingImages = values.images
+            .filter((image: any) => image.isExisting)
+            .map((image: any) => image.preview);
 
             values.images.forEach((image: any) => {
                 if (!image.isExisting && image.file) {
@@ -127,15 +126,12 @@ const EditWorkspace = () => {
                 }
             });
 
-            const existingImages = values.images
-                .filter((image: any) => image.isExisting)
-                .map((image: any) => image.preview);
-            if (existingImages.length > 0) {
-                formData.append('existingImages', JSON.stringify(existingImages));
-            }
+            formData.append('existingImages', JSON.stringify(existingImages));
+
+            formData.forEach((item) => console.log(item))
 
             const response = await editWorkspace(workspaceId, formData)
-            console.log(response)
+            console.log(response, "response in edit page")
             if (response?.data?.success) {
                 toast.success("Workspace successfully updated!")
                 navigate('/owner/workspace')
@@ -301,6 +297,7 @@ const EditWorkspace = () => {
                                                             />
                                                             <ErrorMessage name="workspaceRules" component="div" className="text-red-500 text-sm mt-1" />
                                                         </div>
+
                                                         <div>
                                                             <label className="text-sm">Amenities</label>
                                                             <div className="flex items-center mt-2 gap-2">
@@ -314,14 +311,19 @@ const EditWorkspace = () => {
                                                                 <button
                                                                     type="button"
                                                                     className="p-2 bg-blue-500 text-white rounded-md"
-                                                                    onClick={() => handleAddAmenity(values, setFieldValue)}
+                                                                    onClick={() => {
+                                                                        if (newAmenity.trim()) {
+                                                                            setFieldValue('amenities', [...values.amenities, newAmenity.trim()]);
+                                                                            setNewAmenity('');
+                                                                        }
+                                                                    }}
                                                                 >
                                                                     Add
                                                                 </button>
                                                             </div>
                                                             <ErrorMessage name="amenities" component="div" className="text-red-500 text-sm mt-1" />
                                                             <ul className="mt-4 space-y-2">
-                                                                {values.amenities?.map((amenity, index) => (
+                                                                {values.amenities.map((amenity, index) => (
                                                                     <li
                                                                         key={index}
                                                                         className="flex justify-between p-2 border rounded-md bg-gray-100"
@@ -344,6 +346,7 @@ const EditWorkspace = () => {
 
                                                     </div>
                                                     {/* Images Section with Preview */}
+
                                                     <div>
                                                         <label className="text-sm">Images</label>
                                                         <input
@@ -368,6 +371,8 @@ const EditWorkspace = () => {
                                                                         onClick={() => {
                                                                             if (!('isExisting' in image) || !image.isExisting) {
                                                                                 URL.revokeObjectURL(image.preview);
+                                                                                const newImages = values.images.filter((_, i) => i !== index);
+                                                                                setFieldValue('images', newImages);
                                                                             }
                                                                             const newImages = values.images.filter((_, i) => i !== index);
                                                                             setFieldValue('images', newImages);

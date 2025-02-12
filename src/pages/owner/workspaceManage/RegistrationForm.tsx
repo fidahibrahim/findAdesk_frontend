@@ -62,12 +62,17 @@ const RegistrationForm = () => {
     };
     const handleSubmit = async (values: FormValues, { setSubmitting }: any) => {
         try {
+            console.log(values.amenities, "aminityyyy")
             const formData = new FormData();
             (Object.keys(values) as (keyof FormValues)[]).forEach((key) => {
                             if (key !== 'images') {
                                 const value = values[key];
                                 if (value !== null && value !== undefined) {
-                                    formData.append(key, typeof value === 'object' ? JSON.stringify(value) : String(value));
+                                    if (key === 'amenities') {
+                                        formData.append(key, JSON.stringify(value));
+                                    } else {
+                                        formData.append(key, typeof value === 'object' ? JSON.stringify(value) : String(value));
+                                    }
                                 }
                             }
                         });
@@ -76,7 +81,10 @@ const RegistrationForm = () => {
                 formData.append('images', image.file);
             });
 
+            formData.forEach((item) => console.log(item))
+
             const response = await workspaceRegister(formData);
+            console.log(response, "response data")
             if (response?.data?.success) {
                 toast.success("Workspace successfully created")
                 navigate('/owner/workspace')

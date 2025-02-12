@@ -15,7 +15,6 @@ const WorkspaceTable: React.FC<UserTableProps> = ({ search, page, setTotalPages 
 
     const navigate = useNavigate()
 
-
     const { confirm } = Modal;
 
     const handleVievClick = (workspaceId: string | undefined) => {

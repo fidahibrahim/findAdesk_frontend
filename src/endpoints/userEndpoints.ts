@@ -9,6 +9,9 @@ const userEndpoints = {
     changePassword: "/api/changePassword",
     contactUs: "/api/contactUs",
     getProfile: "/api/getProfile",
+    recentWorkspaces: "/api/recents",
+    filterWorkspaces: '/api/searchWorkspaces',
+    workspaceDetails: '/api/workspaceDetails',
     
 }
 
