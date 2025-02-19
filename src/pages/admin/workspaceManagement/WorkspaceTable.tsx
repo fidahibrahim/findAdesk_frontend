@@ -12,12 +12,13 @@ import handleError from '@/utils/errorHandler';
 import { workspaceRes } from '@/interface/owner/WorkspaceRegisterValues';
 import { UserTableProps } from '../userMnagement/UserTable';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 const WorkspaceTable: React.FC<UserTableProps> = ({ search, page, setTotalPages, filter }) => {
 
     const [workspaces, setWorkspaces] = useState([]);
     const [loading, setLoading] = useState(false);
-    // const navigate = useNavigate()
+    const navigate = useNavigate()
 
     const fetchData = async () => {
         try {
@@ -64,6 +65,9 @@ const WorkspaceTable: React.FC<UserTableProps> = ({ search, page, setTotalPages,
                 return 'bg-yellow-100 text-yellow-800';
         }
     };
+    const handleVievClick = (workspaceId: string | undefined) => {
+        navigate("/admin/workspaceDetails", { state: { workspaceId: workspaceId } })
+    }
 
     return (
         <div className="bg-white  ml-72 rounded-lg shadow-lg overflow-hidden">
@@ -85,6 +89,7 @@ const WorkspaceTable: React.FC<UserTableProps> = ({ search, page, setTotalPages,
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Action
                         </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
                     </tr>
                 </thead>
                 {workspaces.length === 0 ? (
@@ -144,6 +149,11 @@ const WorkspaceTable: React.FC<UserTableProps> = ({ search, page, setTotalPages,
                                         )}
 
                                     </div>
+                                </td>
+                                <td className='px-6 py-4 whitespace-nowrap text-sm text-blue-400 underline'
+                                    onClick={() => handleVievClick(workspace._id)}
+                                >
+                                    view
                                 </td>
                             </tr>
                         ))}

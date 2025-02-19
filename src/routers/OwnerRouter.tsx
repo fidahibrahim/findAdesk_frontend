@@ -1,7 +1,7 @@
 import WithAuth from '@/hocs/owner/WithAuth'
 import WithoutAuth from '@/hocs/owner/WithoutAuth'
 import ChangePassword from '@/pages/owner/auth/ChangePassword'
-import ForgetPassword from '@/pages/owner/auth/ForgetPassword'
+import ForgotPassword from "@/components/generic/ForgotPasswordForm"
 import OwnerLogin from '@/pages/owner/auth/OwnerLogin'
 import OwnerDashboard from '@/pages/owner/dashboard/OwnerDashboard'
 import Otp from '@/pages/owner/Registration/Otp'
@@ -20,12 +20,12 @@ const OwnerRouter = () => {
         <Route path='/register' element={<WithoutAuth component={Register}  />} />
         <Route path='/otp' element={<WithoutAuth component={Otp}  />} />
         <Route path='/dashboard' element={<WithAuth component={OwnerDashboard} />} />
-        <Route path='/forgotPassword' element={<ForgetPassword />} />
+        <Route path='/forgotPassword' element={<ForgotPassword />} />
         <Route path='/changePassword' element={<ChangePassword />} />
         <Route path='/workspace' element={<WithAuth component={Workspace} />} />
         <Route path='/workspaceRegister' element={<WithAuth component={Registration} />} />
         <Route path='/viewDetails' element={<WithAuth component={ViewDetails} />} />
-        <Route path='/editWorkspace' element={<EditWorkspace/>} />
+        <Route path='/editWorkspace' element={<WithAuth component={EditWorkspace} />} />
       </Routes>
     </>
   )

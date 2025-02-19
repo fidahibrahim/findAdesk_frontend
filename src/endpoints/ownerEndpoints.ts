@@ -3,6 +3,7 @@ const ownerEndpoints = {
     verifyOtp: "/owner/verifyOtp",
     resendOtp: "/owner/resendOtp",
     login: "/owner/",
+    forgotPassword: "/owner/forgotPassword",
     logout: "/owner/logout",
     register: "/owner/addWorkspace",
     listWorkspaces: "/owner/listWorkspaces",

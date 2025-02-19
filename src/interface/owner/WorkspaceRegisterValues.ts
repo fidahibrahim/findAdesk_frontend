@@ -36,7 +36,7 @@ export interface workspaceRes {
     pricePerHour: string;
     workspaceRules: string[];
     amenities: string[];
-    images: { file: File; preview: string }[];
+    images: string[];
     status: string
 }
 

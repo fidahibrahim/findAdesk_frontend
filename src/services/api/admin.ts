@@ -20,6 +20,17 @@ export const adminLogin = async (
     }
 }
 
+export const adminSendForgotEmail = async (email: string) => {
+    console.log(email, "email")
+    try {
+        const response = await Api.post(adminEndpoints.forgotPassword, { email })
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
 export const adminLogout = async (): Promise<AxiosResponse<unknown> | undefined> => {
     try {
         const response = await Api.post(adminEndpoints.logout)
@@ -30,7 +41,7 @@ export const adminLogout = async (): Promise<AxiosResponse<unknown> | undefined>
 }
 
 export const getUsers = async (search: string, page: number) => {
-    
+
     try {
         return await Api.get(adminEndpoints.users, {
             params: {
@@ -75,7 +86,7 @@ export const blockOwner = async (ownerId: string) => {
     }
 }
 
-export const getWorkspaces = async (search: string, page: number, filter: string|undefined) => {
+export const getWorkspaces = async (search: string, page: number, filter: string | undefined) => {
     try {
         return await Api.get(adminEndpoints.workspaces, {
             params: {
@@ -89,7 +100,16 @@ export const getWorkspaces = async (search: string, page: number, filter: string
     }
 }
 
-export const updateStatus = async (workspaceId: string|undefined, status: string)=>{
+export const getWorkspaceDetails = async (workspaceId: string) => {
+    try {
+        const response = await Api.get(`${adminEndpoints.viewDetails}?workspaceId=${workspaceId}`)
+        return response
+    } catch (error) {
+        apiHandler(error)
+    }
+}
+
+export const updateStatus = async (workspaceId: string | undefined, status: string) => {
     try {
         return await Api.put(adminEndpoints.updateStatus, { workspaceId, status })
     } catch (error) {

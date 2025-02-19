@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { User, Edit, Copy, Activity, LogOut, HelpCircle, Menu, X, ChevronRight } from 'lucide-react';
+import { User, Edit, Copy, Activity, LogOut, HelpCircle, Menu, X } from 'lucide-react';
 import Footer from '@/components/user/Footer';
 import Header from '@/components/user/Header';
 import { Card, CardContent } from '@/components/ui/card';
@@ -25,7 +25,8 @@ const ProfilePage = () => {
         const fetchProfile = async () => {
             try {
                 const response = await getProfile();
-                setProfileData(response.data);
+                console.log(response,"response profile")
+                setProfileData(response.data.data);
             } catch (error) {
                 handleError(error);
             }
@@ -144,9 +145,9 @@ const ProfilePage = () => {
                                             ) : (
                                                 <div className="text-center py-8 bg-gray-50 rounded-lg">
                                                     <p className="text-gray-500">No addresses added yet</p>
-                                                    <Button variant="outline" className="mt-4">
+                                                    {/* <Button variant="outline" className="mt-4">
                                                         Add Address
-                                                    </Button>
+                                                    </Button> */}
                                                 </div>
                                             )}
                                         </div>

@@ -65,6 +65,16 @@ export const login = async (
     }
 }
 
+export const ownerSendForgotEmail = async (email: string) => {
+    try {
+        const response = await Api.post(ownerEndpoints.forgotPassword, { email })
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
 export const ownerLogout = async (): Promise<AxiosResponse<unknown> | undefined> => {
     try {
         const response = await Api.post(ownerEndpoints.logout)

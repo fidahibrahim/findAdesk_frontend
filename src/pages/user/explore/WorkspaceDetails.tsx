@@ -98,6 +98,7 @@ const WorkspaceDetails = () => {
         {/* Image Gallery */}
         {workspace.images && workspace.images.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            
             {workspace.images.map((imageUrl: string, index: number) => (
               <div key={index} className="relative h-64 rounded-lg overflow-hidden">
                 <img
@@ -213,21 +214,22 @@ const WorkspaceDetails = () => {
         )}
 
         {/* Rules */}
-        {workspace.workspaceRules && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Workspace Rules</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-start gap-3">
-                <Scroll className="w-5 h-5 text-blue-500 mt-1" />
-                <p className="text-gray-700 whitespace-pre-line">
-                  {workspace.workspaceRules}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        <Card>
+          <CardHeader>
+            <CardTitle>Workspace Rules</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-start gap-3">
+              <Scroll className="w-5 h-5 text-blue-500 mt-1" />
+              <p className="text-gray-700 whitespace-pre-line">
+                {workspace.workspaceRules?.length && workspace.workspaceRules.some(rule => rule.trim())
+                  ? workspace.workspaceRules.join("\n")
+                  : "No rules specified"}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="flex items-center justify-between mt-6">
           <button
             onClick={handleBack}
@@ -242,7 +244,6 @@ const WorkspaceDetails = () => {
             Book Now
           </button>
         </div>
-
       </div>
       <Footer />
     </div>

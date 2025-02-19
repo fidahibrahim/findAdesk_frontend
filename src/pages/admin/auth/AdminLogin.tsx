@@ -111,7 +111,7 @@ const AdminLogin = () => {
                       Password
                     </label>
                     <a
-                      href="/resetPassword"
+                      href="/forgotPasswordAdmin"
                       className="text-sm text-blue-600 hover:underline"
                     >
                       Reset password?

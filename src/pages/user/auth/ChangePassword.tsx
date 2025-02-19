@@ -1,22 +1,31 @@
 import { changePassword } from '@/services/api/user';
+import handleError from '@/utils/errorHandler';
 import { changePassSchema } from '@/validation/formValidation';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'sonner';
 
 export interface changePass {
     password: string
 }
 
 const ChangePassword = () => {
-
-    const { token } = useParams()      
+    const { token } = useParams()
+    const navigate = useNavigate()
 
     const handleSubmit = async (values: changePass) => {
-        console.log(values, token)
-        const response = await changePassword(token, values.password)
-        console.log(response,"ressss")
+        try {
+            const response = await changePassword(token, values.password)
+            if(response.status === 200){
+                toast.success("Password Updated Successfully!")
+                setTimeout(() => navigate("/login"), 2000);
+            }
 
+        } catch (error) {
+            handleError(error)
+        }
     };
+
     return (
         <>
             <div className="min-h-screen bg-gray-50 flex flex-col">

@@ -32,7 +32,7 @@ const UserRouter = () => {
                 < Route path="/termsAndConditions" element={<TermsAndConditions />} />
                 < Route path="/explore" element={<Explore />} />
                 < Route path="/searchWorkspace" element={<WithAuth component={Filtered} />} />
-                < Route path="/workspaceDetails" element={<WorkspaceDetails/>} />
+                < Route path="/workspaceDetails" element={<WithAuth component={WorkspaceDetails} />} />
             </Routes>
         </>
     )
