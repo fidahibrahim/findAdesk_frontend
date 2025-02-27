@@ -18,7 +18,6 @@ const Filtered = () => {
             const fetchWorkspaces = async () => {
                 try {
                     const response = await fetchFilterWorkspaces(filters)
-                    console.log(response)
                     setWorkspaces(response.data.data)
                 } catch (error) {
                     handleError(error)

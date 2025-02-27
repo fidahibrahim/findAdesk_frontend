@@ -14,6 +14,7 @@ import TermsAndConditions from "@/pages/user/static/TermsAndConditions"
 import Explore from "@/pages/user/explore/Explore"
 import Filtered from "@/pages/user/explore/Filtered"
 import WorkspaceDetails from "@/pages/user/explore/WorkspaceDetails"
+import EditProfile from "@/pages/user/profile/EditProfile"
 
 
 const UserRouter = () => {
@@ -27,6 +28,7 @@ const UserRouter = () => {
                 < Route path="/forgotPassword" element={<ForgotPassword />} />
                 < Route path="/resetPassword/:token" element={<ChangePassword />} />
                 < Route path="/profile" element={<WithAuth component={ProfilePage} />} />
+                < Route path="/editProfile" element={<WithAuth component={EditProfile} /> } />
                 < Route path="/aboutUs" element={<AboutUs />} />
                 < Route path="/contactUs" element={<ContactUs />} />
                 < Route path="/termsAndConditions" element={<TermsAndConditions />} />

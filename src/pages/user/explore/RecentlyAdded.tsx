@@ -3,10 +3,12 @@ import { fetchRecentWorkspaces } from "@/services/api/user";
 import handleError from "@/utils/errorHandler";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom";
 
 const RecentlyAdded = () => {
     const [workspaces, setWorkspaces] = useState<workspaceData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchWorkspaces = async () => {
@@ -36,6 +38,10 @@ const RecentlyAdded = () => {
             });
         }
     };
+
+    const handleVievClick = (workspaceId: string | undefined) => {
+        navigate("/workspaceDetails", { state: { workspaceId: workspaceId } })
+      }
 
     if (workspaces.length === 0) {
         return (
@@ -75,7 +81,7 @@ const RecentlyAdded = () => {
                     <div
                         key={workspace._id}
                         className="relative group min-w-[300px] cursor-pointer"
-                        onClick={() => window.location.href = `/workspaces/${workspace._id}`}
+                        onClick={() => handleVievClick(workspace._id)}
                     >
                         <div className="relative h-64 rounded-lg overflow-hidden">
                             <img

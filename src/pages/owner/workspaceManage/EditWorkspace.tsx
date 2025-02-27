@@ -72,8 +72,6 @@ const EditWorkspace = () => {
             try {
                 const response = await viewEditWorkspace(workspaceId)
                 const data = response.data.data
-                console.log(data, "data listed in the edit form")
-
                 const transformedImages: ExistingImage[] = data.images ?
                     data.images.map((url: string) => ({
                         preview: url,
@@ -97,7 +95,6 @@ const EditWorkspace = () => {
 
 
     const handleSubmit = async (values: any, { isSubmitting }: any) => {
-        console.log(values, "values in handlesubmit")
         try {
             const formData = new FormData();
             (Object.keys(values) as (keyof FormValues)[]).forEach((key) => {
@@ -127,11 +124,7 @@ const EditWorkspace = () => {
             });
 
             formData.append('existingImages', JSON.stringify(existingImages));
-
-            formData.forEach((item) => console.log(item))
-
             const response = await editWorkspace(workspaceId, formData)
-            console.log(response, "response in edit page")
             if (response?.data?.success) {
                 toast.success("Workspace successfully updated!")
                 navigate('/owner/workspace')

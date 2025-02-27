@@ -169,29 +169,29 @@ export const workspaceRegisterSchema = yup.object().shape({
     // .min(2, 'Minimum 2 images required')
     .max(5, 'Maximum 5 images allowed')
     .of(
-      yup.mixed().test('image-validation', 'Invalid image format or size', 
-        function (value: any):value is WorkspaceImage {
-        if (!value) return false;
+      yup.mixed().test('image-validation', 'Invalid image format or size',
+        function (value: any): value is WorkspaceImage {
+          if (!value) return false;
 
-        // For existing images, only validate the preview URL
-        if ('isExisting' in value && value.isExisting) {
-          try {
-            new URL(value.preview);
-            return true;
-          } catch {
-            return false;
+          // For existing images, only validate the preview URL
+          if ('isExisting' in value && value.isExisting) {
+            try {
+              new URL(value.preview);
+              return true;
+            } catch {
+              return false;
+            }
           }
-        }
 
-        // For new images, validate file type and size
-        if ('file' in value && value.file) {
-          const isValidFormat = SUPPORTED_IMAGE_FORMATS.includes(value.file.type);
-          const isValidSize = value.file.size <= 5 * 1024 * 1024;
-          return isValidFormat && isValidSize;
-        }
+          // For new images, validate file type and size
+          if ('file' in value && value.file) {
+            const isValidFormat = SUPPORTED_IMAGE_FORMATS.includes(value.file.type);
+            const isValidSize = value.file.size <= 5 * 1024 * 1024;
+            return isValidFormat && isValidSize;
+          }
 
-        return false;
-      })
+          return false;
+        })
     )
     .required('Images are required')
 });
@@ -211,4 +211,36 @@ export const contactSchema = yup.object({
     .required('Message is required')
     .min(10, 'Message must be at least 10 characters')
 });
+export const profileSchema = yup.object({
+  name: yup.string()
+    .matches(
+      /^[a-zA-Z]+( [a-zA-Z]+)?$/,
+      "Full name must only contain letters"
+    )
+    .required('Username is required')
+    .min(3, "Username is required")
+    .max(50, "Username is too long"),
+  email: yup.string()
+    .email('Invalid email address'),
+  image: yup.string()
+    .required('Images are required')
+});
+export const availabilitySchema = yup.object({
+  date: yup.string()
+  .required('Date is required'),
+  startTime: yup.mixed().required('Start time is required'),
+  endTime: yup.mixed()
+    .required('End time is required')
+    .test('min-duration', 'End time must be at least 1 hour after start time', function (endTime) {
+      const { startTime } = this.parent;
+      if (dayjs.isDayjs(startTime) && dayjs.isDayjs(endTime)) {
+        return endTime.diff(startTime, 'hour') >= 1;
+      }
+      return true;
+    }),
+    seats: yup.number()
+    .required('Number of seats is required')
+    
+
+})
 

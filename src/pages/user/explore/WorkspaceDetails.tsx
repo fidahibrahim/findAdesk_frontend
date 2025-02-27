@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+// import AvailabilityChecker from "./AvailabilityChecker";
 
 const WorkspaceDetails = () => {
   const location = useLocation()
@@ -110,7 +111,7 @@ const WorkspaceDetails = () => {
             ))}
           </div>
         )}
-
+        {/* <AvailabilityChecker workspace={workspace} /> */}
         {/* Details Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {/* Basic Info Card */}

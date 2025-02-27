@@ -148,4 +148,20 @@ export const workspaceDetails = async (workspaceId: string) => {
     }
 }
 
+export const editProfile = async (formData: FormData) => {
+    try {
+        return await Api.put(userEndpoints.editProfile, formData)
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
 
+export const checkAvailability = async (workspaceId: string, formData: FormData) => {
+    try {
+        return await Api.post(`${userEndpoints.checkAvailability}?workspaceId=${workspaceId}`, formData)
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}

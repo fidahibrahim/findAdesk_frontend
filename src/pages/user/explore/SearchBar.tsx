@@ -13,8 +13,18 @@ const SearchBar = ({ onSearch }: any) => {
 
     const handleSearch = () => {
         if (filters.type || filters.location || filters.date || filters.amenities) {
-            onSearch(filters);
-            navigate('/searchWorkspace', { state: { filters } });
+            let day = '';
+            if (filters.date) {
+                const date = new Date(filters.date)
+                const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                day = days[date.getDay()]
+            }
+            const searchFilters = {
+                ...filters,
+                day
+            }
+            onSearch(searchFilters);
+            navigate('/searchWorkspace', { state: { filters: searchFilters } });
         }
     };
 
@@ -53,6 +63,7 @@ const SearchBar = ({ onSearch }: any) => {
                                 className="w-full p-3 border rounded-lg"
                                 value={filters.date}
                                 onChange={(e) => setFilters({ ...filters, date: e.target.value })}
+                                min={new Date().toISOString().split('T')[0]}
                             />
                         </div>
                         <div className="flex-1 min-w-[200px]">

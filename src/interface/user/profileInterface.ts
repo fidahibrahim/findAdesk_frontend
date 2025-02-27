@@ -8,5 +8,7 @@ export interface profileInterface {
     userId?: string;
     name: string;
     email: string;
-    address: Address[]; 
+    image: string;
 }
+
+
