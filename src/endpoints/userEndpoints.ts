@@ -10,11 +10,12 @@ const userEndpoints = {
     contactUs: "/api/contactUs",
     getProfile: "/api/getProfile",
     editProfile: '/api/editProfile',
+    resetPassword: '/api/profile/resetPassword',
     recentWorkspaces: "/api/recents",
     filterWorkspaces: '/api/searchWorkspaces',
     workspaceDetails: '/api/workspaceDetails',
     checkAvailability: '/api/checkAvailability',
-    
+    bookings: '/api/bookings',
 }
 
 export default userEndpoints

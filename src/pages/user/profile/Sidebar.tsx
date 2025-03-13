@@ -47,14 +47,14 @@ const Layout = ({ children }: any) => {
                             )}
                         </a>
                         <a
-                            href="/dashboard/change-password"
+                            href="/profile/resetPassword"
                             className={`w-full flex items-center px-4 py-3 rounded-xl transition-all duration-200
-                            ${location.pathname === '/dashboard/change-password'
+                            ${location.pathname === '/profile/resetPassword'
                                     ? 'bg-blue-50 text-blue-700 shadow-sm'
                                     : 'text-gray-700 hover:bg-gray-50'
                                 }`}
                         >
-                            <Key className={`h-5 w-5 ${location.pathname === '/dashboard/change-password' ? 'text-blue-700' : 'text-gray-500'}`} />
+                            <Key className={`h-5 w-5 ${location.pathname === '/profile/resetPassword' ? 'text-blue-700' : 'text-gray-500'}`} />
                             {isSidebarOpen && (
                                 <div className="ml-3 text-left">
                                     <span className="font-medium block">Change Password</span>

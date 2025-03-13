@@ -240,7 +240,23 @@ export const availabilitySchema = yup.object({
     }),
     seats: yup.number()
     .required('Number of seats is required')
-    
-
+})
+export const resetPassSchema = yup.object({
+  currentPassword: yup.string()
+  .required('Current Password is required'),
+  newPassword: yup.string()
+  .min(8, "Password must be at least 8 characters")
+  .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+  .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+  .matches(/\d/, "Password must contain at least one number")
+  .matches(
+    /[!@#$%^&*(),.?":{}|<>]/,
+    "Password must contain at least one special character"
+  )
+  .required("Password is required")
+  .notOneOf([yup.ref('currentPassword')], "New password must be different from current password"),
+  confirmPassword: yup.string()
+  .oneOf([yup.ref('newPassword')], "Passwords must match")
+  .required("Confirm password is required"),
 })
 

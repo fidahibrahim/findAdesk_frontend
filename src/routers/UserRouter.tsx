@@ -15,6 +15,8 @@ import Explore from "@/pages/user/explore/Explore"
 import Filtered from "@/pages/user/explore/Filtered"
 import WorkspaceDetails from "@/pages/user/explore/WorkspaceDetails"
 import EditProfile from "@/pages/user/profile/EditProfile"
+import ResetPassword from "@/pages/user/profile/ResetPassword"
+import Checkout from "@/pages/user/booking/Checkout"
 
 
 const UserRouter = () => {
@@ -28,13 +30,15 @@ const UserRouter = () => {
                 < Route path="/forgotPassword" element={<ForgotPassword />} />
                 < Route path="/resetPassword/:token" element={<ChangePassword />} />
                 < Route path="/profile" element={<WithAuth component={ProfilePage} />} />
-                < Route path="/editProfile" element={<WithAuth component={EditProfile} /> } />
+                < Route path="/editProfile" element={<WithAuth component={EditProfile} />} />
+                < Route path="/profile/resetPassword" element={<WithAuth component={ResetPassword} />} />
                 < Route path="/aboutUs" element={<AboutUs />} />
                 < Route path="/contactUs" element={<ContactUs />} />
                 < Route path="/termsAndConditions" element={<TermsAndConditions />} />
                 < Route path="/explore" element={<Explore />} />
                 < Route path="/searchWorkspace" element={<WithAuth component={Filtered} />} />
                 < Route path="/workspaceDetails" element={<WithAuth component={WorkspaceDetails} />} />
+                < Route path="/checkout" element={<WithAuth component={Checkout} />} />
             </Routes>
         </>
     )

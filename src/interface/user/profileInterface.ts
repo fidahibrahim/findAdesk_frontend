@@ -8,7 +8,8 @@ export interface profileInterface {
     userId?: string;
     name: string;
     email: string;
-    image: string;
+    image: any;
+    imageFile?: File;
 }
 
 

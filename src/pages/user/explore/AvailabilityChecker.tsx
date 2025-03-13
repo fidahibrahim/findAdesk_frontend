@@ -7,17 +7,45 @@ import { availabilitySchema } from '@/validation/formValidation';
 import { checkAvailability } from '@/services/api/user';
 import handleError from '@/utils/errorHandler';
 import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
+import AvailabilityResult from './AvailabilityResult';
+
+interface AvailabilityResponse {
+  data: {
+    isAvailable: boolean;
+    [key: string]: any;
+  };
+  requestData: any;
+  [key: string]: any;
+}
+
+interface AvailabilityCheckerProps {
+  workspace: any;
+  onAvailabilityChange?: (isAvailable: boolean, bookingDetails: any) => void;
+}
+
+const AvailabilityChecker = ({ workspace, onAvailabilityChange }: AvailabilityCheckerProps) => {
+  const [availabilityResult, setAvailabilityResult] = useState<AvailabilityResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (availabilityResult && onAvailabilityChange) {
+      const isAvailable = availabilityResult.data?.data.isAvailable || false;
+      onAvailabilityChange(isAvailable, {
+        date: availabilityResult.requestData?.date,
+        startTime: availabilityResult.requestData?.startTime,
+        endTime: availabilityResult.requestData?.endTime,
+        seats: availabilityResult.requestData?.seats,
+        day: availabilityResult.requestData?.day
+      });
+    }
+  }, [availabilityResult, onAvailabilityChange]);
 
 
-
-const AvailabilityChecker = ({ workspace }: any) => {
   const handleCheck = async (values: any) => {
     const workspaceId = workspace._id
+    setLoading(true);
     try {
-
-      const dayOfWeek = dayjs(values.date).format('dddd')
-      console.log(dayOfWeek)
-
       const formattedStartTime = values.startTime
         ? dayjs(values.startTime).format('HH:mm')
         : '';
@@ -26,16 +54,33 @@ const AvailabilityChecker = ({ workspace }: any) => {
         ? dayjs(values.endTime).format('HH:mm')
         : '';
 
-      const formData = new FormData()
-      formData.append('date', dayOfWeek)
-      formData.append('startTime', formattedStartTime);
-      formData.append('endTime', formattedEndTime);
-      formData.append('seats', values.seats.toString());
+      const selectedDate = values.date ? dayjs(values.date) : null
+      const dayOfWeek = selectedDate ? selectedDate.format('dddd') : ''
 
-      const response = await checkAvailability(workspaceId, values)
-      console.log(response)
+      const requestData = {
+        date: values.date,
+        startTime: formattedStartTime,
+        endTime: formattedEndTime,
+        seats: values.seats.toString(),
+        day: dayOfWeek
+      }
+
+      const response = await checkAvailability(workspaceId, requestData)
+      const data = response.data
+      setAvailabilityResult({
+        data: data,
+        requestData: requestData
+      });
+
     } catch (error) {
       handleError(error)
+
+      setAvailabilityResult(null);
+      if (onAvailabilityChange) {
+        onAvailabilityChange(false, null);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -119,11 +164,16 @@ const AvailabilityChecker = ({ workspace }: any) => {
                 <div className="mt-4">
                   <button
                     type='submit'
-                    className="px-6 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                    disabled={loading}
+                    className={`px-6 py-2.5 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium ${loading ? 'opacity-70 cursor-not-allowed' : ''
+                      }`}
                   >
-                    Check Availability
+                    {loading ? 'Checking...' : 'Check Availability'}
                   </button>
                 </div>
+                {availabilityResult && (
+                  <AvailabilityResult result={availabilityResult} />
+                )}
               </CardContent>
             </Card>
           </Form>

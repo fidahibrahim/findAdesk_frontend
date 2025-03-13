@@ -31,15 +31,21 @@ const ProfilePage = () => {
                     <CardContent className="p-8">
                         <div className="space-y-8">
                             <div className="flex items-center space-x-6 pb-6 border-b">
-                                <div className="w-28 h-28 bg-gradient-to-br from-blue-50 to-blue-100 rounded-full flex items-center justify-center shadow-inner">
-                                    <User className="w-14 h-14 text-blue-500" />
+                                <div className="w-28 h-28 rounded-full overflow-hidden shadow-md">
+                                    {profileData?.image ? (
+                                        <img src={profileData.image} alt="Profile" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <div className="w-full h-full bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
+                                            <User className="w-14 h-14 text-blue-500" />
+                                        </div>
+                                    )}
                                 </div>
                                 <div>
                                     <h1 className="text-2xl font-bold text-gray-900">{profileData?.name}</h1>
                                     <p className="text-gray-500">{profileData?.email}</p>
-                                    <Button variant="outline" size="sm" 
-                                    className="mt-2"
-                                    onClick={()=>navigate("/editProfile")}
+                                    <Button variant="outline" size="sm"
+                                        className="mt-2"
+                                        onClick={() => navigate("/editProfile")}
                                     >
                                         <Edit className="w-4 h-4 mr-2" />
                                         Edit Profile

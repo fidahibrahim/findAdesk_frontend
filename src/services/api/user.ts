@@ -8,6 +8,7 @@ import { loginResponse } from "@/interface/user/loginResponse";
 import apiHandler from "@/utils/apiHandler";
 import { TokenResponse } from "@react-oauth/google";
 import { ContactData } from "@/interface/user/contactInterface";
+import { resetPass } from "@/interface/user/resetPassword";
 
 export const signUp = async (
     userData: signupInterface
@@ -150,16 +151,36 @@ export const workspaceDetails = async (workspaceId: string) => {
 
 export const editProfile = async (formData: FormData) => {
     try {
-        return await Api.put(userEndpoints.editProfile, formData)
+        return await Api.put(userEndpoints.editProfile, formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+        })
     } catch (error) {
         apiHandler(error)
         return Promise.reject()
     }
 }
 
-export const checkAvailability = async (workspaceId: string, formData: FormData) => {
+export const resetPassword = async (data: resetPass) => {
     try {
-        return await Api.post(`${userEndpoints.checkAvailability}?workspaceId=${workspaceId}`, formData)
+        return await Api.post(userEndpoints.resetPassword, data)
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const checkAvailability = async (workspaceId: string, data: any) => {
+    try {
+        return await Api.post(`${userEndpoints.checkAvailability}?workspaceId=${workspaceId}`, data)
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const bookings = async (payload: any) => {
+    try {
+        return await Api.post(userEndpoints.bookings, payload)
     } catch (error) {
         apiHandler(error)
         return Promise.reject()
