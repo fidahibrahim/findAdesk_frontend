@@ -15,7 +15,8 @@ const userEndpoints = {
     filterWorkspaces: '/api/searchWorkspaces',
     workspaceDetails: '/api/workspaceDetails',
     checkAvailability: '/api/checkAvailability',
-    bookings: '/api/bookings',
+    bookings: '/api/bookings/createStripeSession',
+    getBookingDetails: '/api/bookings/confirmation'
 }
 
 export default userEndpoints

@@ -180,9 +180,18 @@ export const checkAvailability = async (workspaceId: string, data: any) => {
 
 export const bookings = async (payload: any) => {
     try {
-        return await Api.post(userEndpoints.bookings, payload)
+        return await Api.post(userEndpoints.bookings, {payload})
     } catch (error) {
         apiHandler(error)
         return Promise.reject()
+    }
+}
+
+export const getBookingDetails = async (bookingId: string) => {
+    try {
+        const response = await Api.get(`${userEndpoints.getBookingDetails}?bookingId=${bookingId}`)
+        return response
+    } catch (error) {
+        throw error
     }
 }

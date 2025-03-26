@@ -7,34 +7,24 @@ import handleError from '@/utils/errorHandler';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
+import UserInfo from './UserInfo';
+import WorkspaceDetails from './WorkspaceDetails';
+import PaymentMethod from './PaymentMethod';
+import { toast } from 'sonner';
+import { loadStripe } from '@stripe/stripe-js';
 
 const Checkout = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { workspaceId, bookingDetails, workspace: workspaceData } = location.state || {};
-
     const userInfo = useSelector((state: RootState) => state.user.userInfo)
     const [isSubmitting, setIsSubmitting] = useState(false);
-
     const [formData, setFormData] = useState({
         fullName: userInfo?.name || '',
         email: userInfo?.email || '',
         phone: '',
         specialRequests: '',
         paymentMethod: 'card',
-        cardName: '',
-        cardNumber: '',
-        expDate: '',
-        cvv: ''
-    });
-
-    const [errors, setErrors] = useState({
-        phone: '',
-        specialRequests: '',
-        cardName: '',
-        cardNumber: '',
-        expDate: '',
-        cvv: ''
     });
 
     useEffect(() => {
@@ -53,28 +43,8 @@ const Checkout = () => {
         }
     }, [workspaceId, bookingDetails, workspaceData, navigate]);
 
-    const workspace = {
-        name: workspaceData.workspaceName,
-        images: workspaceData.images,
-        description: workspaceData.spaceDescription || "No description",
-        hourlyRate: workspaceData.pricePerHour,
-        selectedDate: bookingDetails?.date || "Not selected",
-        startTime: bookingDetails?.startTime || "Not selected",
-        endTime: bookingDetails?.endTime || "Not selected",
-        duration: bookingDetails?.duration || 0,
-        seats: bookingDetails?.seats || 1,
-        amenities: workspaceData.amenities || []
-    }
-
-    // Calculate pricing
-    const duration = parseInt(workspace.endTime) - parseInt(workspace.startTime)
-    const subtotal = workspace.hourlyRate * duration
-    const seatsCost = (workspace.seats - 1) * 10;
-    const serviceFee = 6;
-    const total = subtotal + seatsCost + serviceFee;
-
-    const formatDate = (dateString: any) => {
-        if (dateString === "Not selected") return dateString;
+    const formatDate = (dateString: string) => {
+        if (!dateString || dateString === "Not selected") return "Not selected";
         try {
             const date = new Date(dateString);
             return date.toLocaleDateString('en-US', {
@@ -82,90 +52,63 @@ const Checkout = () => {
                 month: 'short',
                 day: 'numeric'
             });
-        } catch (e) {
+        } catch {
             return dateString;
         }
     };
 
     const formatTime = (startTime: string, endTime: string) => {
-        if (startTime === "Not selected" || endTime === "Not selected") {
+        if (!startTime || !endTime || startTime === "Not selected" || endTime === "Not selected") {
             return "Not selected";
         }
-        const formatHour = (hour: any) => {
-            const numHour = parseInt(hour);
-            if (isNaN(numHour)) return hour;
-
-            const ampm = numHour >= 12 ? 'PM' : 'AM';
-            const hour12 = numHour % 12 || 12;
-            return `${hour12} ${ampm}`;
+        const formatTimeString = (timeString: string) => {
+            const [hours, minutes] = timeString.split(':').map(part => parseInt(part));
+            if (isNaN(hours)) return timeString;
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const hours12 = hours % 12 || 12;
+            return `${hours12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''} ${ampm}`;
         };
-        return `${formatHour(startTime)} - ${formatHour(endTime)}`;
+        return `${formatTimeString(startTime)} - ${formatTimeString(endTime)}`;
     };
 
-    const handleInputChange = (e: any) => {
+    const duration = parseInt(bookingDetails?.endTime || '0') - parseInt(bookingDetails?.startTime || '0');
+    const subtotal = workspaceData.pricePerHour * duration;
+    const seatsCost = ((bookingDetails?.seats || 1) - 1) * 10;
+    const serviceFee = 6;
+    const total = subtotal + seatsCost + serviceFee;
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-        if (errors[name as keyof typeof errors]) {
-            setErrors({
-                ...errors,
-                [name]: ''
-            });
-        }
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
     };
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        setIsSubmitting(true);
+        try {
+            const bookingPayload = {
+                userId: userInfo?._id,
+                workspaceId: workspaceId,
+                bookingDetails: bookingDetails,
+                mobile: formData.phone,
+                specialRequests: formData.specialRequests,
+                paymentMethod: formData.paymentMethod,
+                total: total,
+            };
+            const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+            const stripe = await loadStripe(stripeKey)
+            const response = await bookings(bookingPayload);
+            stripe?.redirectToCheckout({ sessionId: response.data.data.id })
 
-        const newErrors = {
-            phone: '',
-            specialRequests: '',
-            cardName: '',
-            cardNumber: '',
-            expDate: '',
-            cvv: ''
-        };
-
-        if (formData.phone.trim() !== '') {
-            const phoneRegex = /^\d{10}$/;
-            if (!phoneRegex.test(formData.phone)) {
-                newErrors.phone = 'Phone number must be 10 digits with no spaces or special characters';
-            }
-        }
-        const hasErrors = Object.values(newErrors).some(error => error !== '');
-        setErrors(newErrors);
-
-        if (!hasErrors) {
-            setIsSubmitting(true);
-            try {
-                const payload = {
-                    workspaceId,
-                    bookingDetails: {
-                        ...bookingDetails,
-                        specialRequests: formData.specialRequests,
-                        phone: formData.phone
-                    },
-                    paymentDetails: {
-                        method: formData.paymentMethod,
-                    },
-                    pricing: {
-                        total
-                    },
-                    userId: userInfo?._id
-                };
-                console.log(payload, "payload")
-                const response = await bookings(payload)
-                console.log(response)
-
-            } catch (error) {
-                handleError(error);
-                setIsSubmitting(false);
-            }
+        } catch (error) {
+            handleError(error);
+        } finally {
+            setIsSubmitting(false);
         }
     };
-
     return (
         <>
             {isSubmitting && <Loader />}
@@ -175,218 +118,26 @@ const Checkout = () => {
                     <div className="max-w-6xl mx-auto">
                         <div className="mb-6">
                             <h1 className="text-2xl font-bold text-gray-900">Secure Checkout</h1>
-                            <p className="text-gray-600">Complete your booking for {workspace.name}</p>
+                            <p className="text-gray-600">Complete your booking for {workspaceData.workspaceName}</p>
                         </div>
-
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                            {/* Left column - Main form */}
                             <div className="lg:col-span-2 space-y-6">
-                                {/* User Information */}
-                                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                                    <h2 className="text-lg font-semibold mb-4 text-gray-800 flex items-center">
-                                        <span className="bg-indigo-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">1</span>
-                                        Your Information
-                                    </h2>
-                                    <div className="space-y-4">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div>
-                                                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                                                <input
-                                                    type="text"
-                                                    id="fullName"
-                                                    name="fullName"
-                                                    value={formData.fullName}
-                                                    readOnly
-                                                    onChange={handleInputChange}
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                                                    placeholder="Enter your full name"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                                                <input
-                                                    type="email"
-                                                    id="email"
-                                                    name="email"
-                                                    value={formData.email}
-                                                    readOnly
-                                                    onChange={handleInputChange}
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                                                    placeholder="Enter your email"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Phone Number (optional)</label>
-                                            <input
-                                                type="tel"
-                                                id="phone"
-                                                name="phone"
-                                                value={formData.phone}
-                                                onChange={handleInputChange}
-                                                className="w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                                                placeholder="For booking updates"
-                                            />
-                                            {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Workspace Details */}
-                                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                                    <h2 className="text-lg font-semibold mb-4 text-gray-800 flex items-center">
-                                        <span className="bg-indigo-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">2</span>
-                                        Workspace Details
-                                    </h2>
-                                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                                        <div className="flex flex-col md:flex-row">
-                                            <div className="md:w-1/4 mb-3 md:mb-0">
-                                                {workspace.images && workspace.images.length > 0 ? (
-                                                    <img
-                                                        src={workspace.images[0]}
-                                                        alt={workspace.name}
-                                                        className="h-20 w-20 rounded-md object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="bg-indigo-100 h-20 w-20 rounded-md flex items-center justify-center">
-                                                        <span className="text-indigo-600 text-sm">No Image</span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <div className="md:w-3/4">
-                                                <h3 className="font-semibold text-gray-800 text-lg">{workspace.name}</h3>
-                                                <p className="text-gray-600 mb-2">{workspace.description}</p>
-                                                <div className="flex flex-wrap gap-2 mt-2">
-                                                    {workspace.amenities.map((amenity: any, index: number) => (
-                                                        <span key={index} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                                                            {amenity}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-4">
-                                        <h3 className="font-medium text-gray-700 mb-2">Booking Details</h3>
-                                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                            <div className="bg-gray-50 p-3 rounded-md border border-gray-200">
-                                                <p className="text-xs text-gray-500">Date</p>
-                                                <p className="font-medium">{formatDate(workspace.selectedDate)}</p>
-                                            </div>
-                                            <div className="bg-gray-50 p-3 rounded-md border border-gray-200">
-                                                <p className="text-xs text-gray-500">Time</p>
-                                                <p className="font-medium">{formatTime(workspace.startTime, workspace.endTime)}</p>
-                                            </div>
-                                            <div className="bg-gray-50 p-3 rounded-md border border-gray-200">
-                                                <p className="text-xs text-gray-500">Duration</p>
-                                                <p className="font-medium">{parseInt(workspace.endTime) - parseInt(workspace.startTime)} hours</p>
-                                            </div>
-                                            <div className="bg-gray-50 p-3 rounded-md border border-gray-200">
-                                                <p className="text-xs text-gray-500">Seats</p>
-                                                <p className="font-medium">{workspace.seats} people</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-4">
-                                        <label htmlFor="specialRequests" className="block text-sm font-medium text-gray-700 mb-1">Special Requests (optional)</label>
-                                        <textarea
-                                            id="specialRequests"
-                                            name="specialRequests"
-                                            rows={3}
-                                            value={formData.specialRequests}
-                                            onChange={handleInputChange}
-                                            className="w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                                            placeholder="Any special requirements for your booking?"
-                                        ></textarea>
-                                        {errors.specialRequests && <p className="mt-1 text-sm text-red-600">{errors.specialRequests}</p>}
-                                    </div>
-                                </div>
-
-                                {/* Payment Section */}
-                                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                                    <h2 className="text-lg font-semibold mb-4 text-gray-800 flex items-center">
-                                        <span className="bg-indigo-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">3</span>
-                                        Payment Method
-                                    </h2>
-
-                                    <div className="flex gap-4 mb-4">
-                                        <div className="flex items-center">
-                                            <input id="card" name="paymentMethod" type="radio" value="card" checked={formData.paymentMethod === 'card'}
-                                                onChange={handleInputChange}
-                                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300" />
-                                            <label htmlFor="card" className="ml-2 block text-sm font-medium text-gray-700">
-                                                Credit Card
-                                            </label>
-                                        </div>
-                                        <div className="flex items-center">
-                                            <input
-                                                id="paypal"
-                                                name="paymentMethod"
-                                                type="radio"
-                                                value="paypal"
-                                                checked={formData.paymentMethod === 'paypal'}
-                                                onChange={handleInputChange}
-                                                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300"
-                                            />
-                                            <label htmlFor="paypal" className="ml-2 block text-sm font-medium text-gray-700">
-                                                Pay With Wallet
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div>
-                                                <label htmlFor="cardName" className="block text-sm font-medium text-gray-700 mb-1">Name on Card</label>
-                                                <input
-                                                    type="text"
-                                                    id="cardName"
-                                                    name="cardName"
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                                                    placeholder="John Smith"
-                                                />
-                                                {errors.cardName && <p className="mt-1 text-sm text-red-600">{errors.cardName}</p>}
-                                            </div>
-                                            <div>
-                                                <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
-                                                <input
-                                                    type="text"
-                                                    id="cardNumber"
-                                                    name="cardNumber"
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                                                    placeholder="•••• •••• •••• ••••"
-                                                />
-                                                {errors.cardNumber && <p className="mt-1 text-sm text-red-600">{errors.cardNumber}</p>}
-                                            </div>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div>
-                                                <label htmlFor="expDate" className="block text-sm font-medium text-gray-700 mb-1">Expiration Date</label>
-                                                <input
-                                                    type="text"
-                                                    id="expDate"
-                                                    name="expDate"
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                                                    placeholder="MM/YY"
-                                                />
-                                                {errors.expDate && <p className="mt-1 text-sm text-red-600">{errors.expDate}</p>}
-                                            </div>
-                                            <div>
-                                                <label htmlFor="cvv" className="block text-sm font-medium text-gray-700 mb-1">CVV</label>
-                                                <input
-                                                    type="text"
-                                                    id="cvv"
-                                                    name="cvv"
-                                                    className="w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                                                    placeholder="123"
-                                                />
-                                                {errors.cvv && <p className="mt-1 text-sm text-red-600">{errors.cvv}</p>}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <UserInfo
+                                    formData={formData}
+                                    handleInputChange={handleInputChange}
+                                />
+                                <WorkspaceDetails
+                                    workspace={workspaceData}
+                                    bookingDetails={bookingDetails}
+                                    formData={formData}
+                                    handleInputChange={handleInputChange}
+                                    formatDate={formatDate}
+                                    formatTime={formatTime}
+                                />
+                                <PaymentMethod
+                                    formData={formData}
+                                    handleInputChange={handleInputChange}
+                                />
                             </div>
 
                             {/* Right column - Summary */}
@@ -396,11 +147,13 @@ const Checkout = () => {
 
                                     <div className="space-y-3 mb-4">
                                         <div className="flex justify-between text-sm">
-                                            <span className="text-gray-600">{parseInt(workspace.endTime) - parseInt(workspace.startTime)} hours × ₹{workspace.hourlyRate}/hr</span>
+                                            <span className="text-gray-600">
+                                                {parseInt(bookingDetails?.endTime || '0') - parseInt(bookingDetails?.startTime || '0')} hours × ₹{workspaceData.pricePerHour}/hr
+                                            </span>
                                             <span className="font-medium">₹{subtotal}.00</span>
                                         </div>
                                         <div className="flex justify-between text-sm">
-                                            <span className="text-gray-600">Additional seats (×{(workspace.seats) - 1})</span>
+                                            <span className="text-gray-600">Additional seats (×{(bookingDetails?.seats || 1) - 1})</span>
                                             <span className="font-medium">₹{seatsCost}.00</span>
                                         </div>
                                         <div className="flex justify-between text-sm">
@@ -453,7 +206,9 @@ const Checkout = () => {
                                     </div>
 
                                     <p className="text-xs text-gray-500 mt-4 text-center">
-                                        By completing this booking, you agree to our <a href="/termsAndConditions" className="text-indigo-600 hover:underline">Terms of Service</a> and <a href="/termsAndConditions" className="text-indigo-600 hover:underline">Privacy Policy</a>.
+                                        By completing this booking, you agree to our{' '}
+                                        <a href="/termsAndConditions" className="text-indigo-600 hover:underline">Terms of Service</a> and{' '}
+                                        <a href="/termsAndConditions" className="text-indigo-600 hover:underline">Privacy Policy</a>.
                                     </p>
                                 </div>
                             </div>

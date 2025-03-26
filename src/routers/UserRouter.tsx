@@ -17,6 +17,7 @@ import WorkspaceDetails from "@/pages/user/explore/WorkspaceDetails"
 import EditProfile from "@/pages/user/profile/EditProfile"
 import ResetPassword from "@/pages/user/profile/ResetPassword"
 import Checkout from "@/pages/user/booking/Checkout"
+// import BookingConfirmation from "@/pages/user/booking/BookingConfirmation"
 
 
 const UserRouter = () => {
@@ -39,6 +40,7 @@ const UserRouter = () => {
                 < Route path="/searchWorkspace" element={<WithAuth component={Filtered} />} />
                 < Route path="/workspaceDetails" element={<WithAuth component={WorkspaceDetails} />} />
                 < Route path="/checkout" element={<WithAuth component={Checkout} />} />
+                {/* < Route path="/bookingConfirmation" element={<BookingConfirmation/>} /> */}
             </Routes>
         </>
     )
