@@ -17,6 +17,8 @@ import WorkspaceDetails from "@/pages/user/explore/WorkspaceDetails"
 import EditProfile from "@/pages/user/profile/EditProfile"
 import ResetPassword from "@/pages/user/profile/ResetPassword"
 import Checkout from "@/pages/user/booking/Checkout"
+import Activity from "@/pages/user/profile/Activity"
+import BookingConfirmation from "@/pages/user/booking/BookingConfirmation"
 // import BookingConfirmation from "@/pages/user/booking/BookingConfirmation"
 
 
@@ -33,6 +35,7 @@ const UserRouter = () => {
                 < Route path="/profile" element={<WithAuth component={ProfilePage} />} />
                 < Route path="/editProfile" element={<WithAuth component={EditProfile} />} />
                 < Route path="/profile/resetPassword" element={<WithAuth component={ResetPassword} />} />
+                <Route path="/profile/activity" element={<WithAuth component={Activity} />} />
                 < Route path="/aboutUs" element={<AboutUs />} />
                 < Route path="/contactUs" element={<ContactUs />} />
                 < Route path="/termsAndConditions" element={<TermsAndConditions />} />
@@ -40,6 +43,7 @@ const UserRouter = () => {
                 < Route path="/searchWorkspace" element={<WithAuth component={Filtered} />} />
                 < Route path="/workspaceDetails" element={<WithAuth component={WorkspaceDetails} />} />
                 < Route path="/checkout/:bookingId" element={<WithAuth component={Checkout} />} />
+                < Route path="/bookingConfirmation/:bookingId" element={<WithAuth component={BookingConfirmation} /> } />
             </Routes>
         </>
     )

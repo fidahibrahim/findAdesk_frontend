@@ -63,14 +63,14 @@ const Layout = ({ children }: any) => {
                             )}
                         </a>
                         <a
-                            href="/dashboard/activity"
+                            href="/profile/activity"
                             className={`w-full flex items-center px-4 py-3 rounded-xl transition-all duration-200
-                            ${location.pathname === '/dashboard/activity'
+                            ${location.pathname === '/profile/activity'
                                     ? 'bg-blue-50 text-blue-700 shadow-sm'
                                     : 'text-gray-700 hover:bg-gray-50'
                                 }`}
                         >
-                            <Activity className={`h-5 w-5 ${location.pathname === '/dashboard/activity' ? 'text-blue-700' : 'text-gray-500'}`} />
+                            <Activity className={`h-5 w-5 ${location.pathname === '/profile/activity' ? 'text-blue-700' : 'text-gray-500'}`} />
                             {isSidebarOpen && (
                                 <div className="ml-3 text-left">
                                     <span className="font-medium block">Activity</span>
@@ -80,14 +80,14 @@ const Layout = ({ children }: any) => {
                         </a>
 
                         <a
-                            href="/dashboard/wallet"
+                            href="/profile/wallet"
                             className={`w-full flex items-center px-4 py-3 rounded-xl transition-all duration-200
-                            ${location.pathname === '/dashboard/wallet'
+                            ${location.pathname === '/profile/wallet'
                                     ? 'bg-blue-50 text-blue-700 shadow-sm'
                                     : 'text-gray-700 hover:bg-gray-50'
                                 }`}
                         >
-                            <Wallet className={`h-5 w-5 ${location.pathname === '/dashboard/wallet' ? 'text-blue-700' : 'text-gray-500'}`} />
+                            <Wallet className={`h-5 w-5 ${location.pathname === '/profile/wallet' ? 'text-blue-700' : 'text-gray-500'}`} />
                             {isSidebarOpen && (
                                 <div className="ml-3 text-left">
                                     <span className="font-medium block">Wallet</span>
@@ -97,14 +97,14 @@ const Layout = ({ children }: any) => {
                         </a>
 
                         <a
-                            href="/dashboard/help"
+                            href="/termsAndConditions"
                             className={`w-full flex items-center px-4 py-3 rounded-xl transition-all duration-200
-                            ${location.pathname === '/dashboard/help'
+                            ${location.pathname === '/termsAndConditions'
                                     ? 'bg-blue-50 text-blue-700 shadow-sm'
                                     : 'text-gray-700 hover:bg-gray-50'
                                 }`}
                         >
-                            <HelpCircle className={`h-5 w-5 ${location.pathname === '/dashboard/help' ? 'text-blue-700' : 'text-gray-500'}`} />
+                            <HelpCircle className={`h-5 w-5 ${location.pathname === '/termsAndConditions' ? 'text-blue-700' : 'text-gray-500'}`} />
                             {isSidebarOpen && (
                                 <div className="ml-3 text-left">
                                     <span className="font-medium block">Help & Support</span>

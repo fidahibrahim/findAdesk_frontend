@@ -10,6 +10,7 @@ import { TokenResponse } from "@react-oauth/google";
 import { ContactData } from "@/interface/user/contactInterface";
 import { resetPass } from "@/interface/user/resetPassword";
 import { bookingDetails } from "@/interface/user/workspaceInterface";
+import { BookingDetails } from "@/interface/owner/BookingInterfaces";
 
 export const signUp = async (
     userData: signupInterface
@@ -183,22 +184,22 @@ export const pendingBookings = async (
     workspaceId: string,
     bookingDetails: bookingDetails | undefined,
     pricePerHour: string
-  ) => {
+) => {
     try {
-      return await Api.post(userEndpoints.pendingBooking, {
-        workspaceId,
-        bookingDetails,
-        pricePerHour,
-      });
+        return await Api.post(userEndpoints.pendingBooking, {
+            workspaceId,
+            bookingDetails,
+            pricePerHour,
+        });
     } catch (error) {
-      apiHandler(error);
-      return Promise.reject();
+        apiHandler(error);
+        return Promise.reject();
     }
-  };
+};
 
 export const bookings = async (payload: any) => {
     try {
-        return await Api.post(userEndpoints.bookings, {payload})
+        return await Api.post(userEndpoints.bookings, { payload })
     } catch (error) {
         apiHandler(error)
         return Promise.reject()
@@ -208,6 +209,24 @@ export const bookings = async (payload: any) => {
 export const getBookingDetails = async (bookingId: string) => {
     try {
         const response = await Api.get(`${userEndpoints.getBookingDetails}?bookingId=${bookingId}`)
+        return response
+    } catch (error) {
+        throw error
+    }
+}
+
+export const fetchBookingHistory = async (): Promise<{ data: { data: BookingDetails[] } }> => {
+    try {
+        const response = await Api.get(userEndpoints.getBookingHistory)
+        return response
+    } catch (error) {
+        throw error
+    }
+}
+
+export const bookingConfirmDetails = async (bookingId: string|undefined) => {
+    try {
+        const response = await Api.get(`${userEndpoints.bookingConfirmDetails}?bookingId=${bookingId}`)
         return response
     } catch (error) {
         throw error

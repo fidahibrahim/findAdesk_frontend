@@ -11,6 +11,7 @@ interface Workspace {
     place: string;
     state: string;
     workspaceMail: string;
+    images?: [],
     _id: string;
 }
 

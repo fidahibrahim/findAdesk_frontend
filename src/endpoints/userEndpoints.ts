@@ -18,6 +18,9 @@ const userEndpoints = {
     pendingBooking: "/api/pendingBookings",
     bookings: '/api/bookings/createStripeSession',
     getBookingDetails: '/api/bookings/details',
+    getBookingHistory:'/api/bookingHistory',
+    bookingConfirmDetails: '/api/bookingConfirmDetails'
+    
 }
 
 export default userEndpoints

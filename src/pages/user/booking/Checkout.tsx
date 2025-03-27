@@ -261,8 +261,6 @@ const Checkout = () => {
         }
     }, [bookingId]);
 
-    console.log("my checkout bookingDetails", bookingDetails);
-
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         try {
@@ -276,7 +274,6 @@ const Checkout = () => {
                 phoneNumber,
                 paymentMethod,
             };
-            console.log("my sending bookingData - ", bookingData);
 
             const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
             const stripe = await loadStripe(stripeKey);
