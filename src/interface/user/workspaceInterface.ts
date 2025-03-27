@@ -16,3 +16,12 @@ export interface workspaceData {
     amenities: string[];
     images: string[];
 }
+
+export interface bookingDetails {
+    date: string;
+    startTime: string;
+    endTime: string;
+    seats: string;
+    day: string;
+    price: number;
+}

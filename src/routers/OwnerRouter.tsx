@@ -11,6 +11,8 @@ import Registration from '@/pages/owner/workspaceManage/Registration'
 import ViewDetails from '@/pages/owner/workspaceManage/ViewDetails'
 import Workspace from '@/pages/owner/workspaceManage/Workspace'
 import { Route, Routes } from 'react-router-dom'
+import Booking from '@/pages/owner/booking/Booking'
+import BookingViewDetails from '@/pages/owner/booking/BookingViewDetails'
 
 const OwnerRouter = () => {
   return (
@@ -26,6 +28,8 @@ const OwnerRouter = () => {
         <Route path='/workspaceRegister' element={<WithAuth component={Registration} />} />
         <Route path='/viewDetails' element={<WithAuth component={ViewDetails} />} />
         <Route path='/editWorkspace' element={<WithAuth component={EditWorkspace} />} />
+        <Route path='/bookings' element={<WithAuth component={Booking} />} />
+        <Route path='/bookingViewDetails' element={<WithAuth component={BookingViewDetails} />} />
       </Routes>
     </>
   )

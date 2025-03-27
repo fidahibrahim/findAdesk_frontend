@@ -6,8 +6,6 @@ import { AxiosResponse } from "axios"
 import { adminLoginResponse } from "@/interface/user/loginResponse"
 
 
-
-
 export const adminLogin = async (
     adminCredentials: loginInterface
 ): Promise<AxiosResponse<adminLoginResponse>> => {
@@ -112,6 +110,15 @@ export const getWorkspaceDetails = async (workspaceId: string) => {
 export const updateStatus = async (workspaceId: string | undefined, status: string) => {
     try {
         return await Api.put(adminEndpoints.updateStatus, { workspaceId, status })
+    } catch (error) {
+        apiHandler(error)
+    }
+}
+
+export const fetchAdminRevenue = async (filter: any) => {
+    try {
+        const response = await Api.get(`${adminEndpoints.getAdminRevenue}?filter=${filter}`)
+        return response
     } catch (error) {
         apiHandler(error)
     }

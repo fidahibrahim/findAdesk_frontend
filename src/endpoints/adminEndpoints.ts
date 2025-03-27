@@ -10,7 +10,7 @@ const adminEndpoints = {
     workspaces: "/admin/getWorkspaces",
     viewDetails: '/admin/workspaceDetails',
     updateStatus: "/admin/updateStatus",
-
+    getAdminRevenue: "/admin/adminRevenue"
 }
 
 export default adminEndpoints

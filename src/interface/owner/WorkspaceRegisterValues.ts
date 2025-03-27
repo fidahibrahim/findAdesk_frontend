@@ -39,4 +39,25 @@ export interface workspaceRes {
     images: string[];
     status: string
 }
+export interface bookingRes {
+    _id?: string;
+    userId: string;
+    workspaceId: string;
+    bookingId: string;
+    date: string | Date;
+    startTime: string | Date;
+    endTime: string | Date;
+    duration?: string;
+    seats: string;
+    concern?: string;
+    total: number;
+    grandTotal: number;
+    status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+    paymentMethod?: string;
+    additionalSeats?: number;
+    additionalSeatsAmount?: number;
+    serviceFee?: number;
+    day?: string;
+    pricePerHour?: number;
+}
 

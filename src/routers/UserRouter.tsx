@@ -39,8 +39,7 @@ const UserRouter = () => {
                 < Route path="/explore" element={<Explore />} />
                 < Route path="/searchWorkspace" element={<WithAuth component={Filtered} />} />
                 < Route path="/workspaceDetails" element={<WithAuth component={WorkspaceDetails} />} />
-                < Route path="/checkout" element={<WithAuth component={Checkout} />} />
-                {/* < Route path="/bookingConfirmation" element={<BookingConfirmation/>} /> */}
+                < Route path="/checkout/:bookingId" element={<WithAuth component={Checkout} />} />
             </Routes>
         </>
     )

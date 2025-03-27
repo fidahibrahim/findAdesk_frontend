@@ -36,7 +36,7 @@ const Navbar = () => {
                             <span>Workspace</span>
                         </a>
                         <a
-                            href="/bookings"
+                            href="/owner/bookings"
                             className={`flex items-center space-x-2 p-2 rounded-lg ${location.pathname === "/bookings"
                                 ? "bg-gray-100 text-gray-700"
                                 : "text-gray-600 hover:bg-gray-100"

@@ -9,7 +9,10 @@ const ownerEndpoints = {
     listWorkspaces: "/owner/listWorkspaces",
     viewDetails: "/owner/viewDetails",
     editWorkspace: "/owner/editWorkspace",
-    deleteWorkspace: "/owner/deleteWorkspace"
+    deleteWorkspace: "/owner/deleteWorkspace",
+    listBookings: "/owner/listBookings",
+    getBookingDetails: "/owner/bookingViewDetails",
+    
 }
 
 export default ownerEndpoints

@@ -157,3 +157,27 @@ export const deleteWorkspace = async (workspaceId: string | undefined) => {
         return Promise.reject()
     }
 }
+
+export const listBookings = async (search: string, page: number) => {
+    try {
+        return await Api.get(ownerEndpoints.listBookings, {
+            params: {
+                search,
+                page,
+            },
+        })
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const getBookingDetails = async (bookingId: string) => {
+    try {
+        const response = await Api.get(`${ownerEndpoints.getBookingDetails}?bookingId=${bookingId}`)
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}

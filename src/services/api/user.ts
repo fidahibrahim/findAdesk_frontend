@@ -9,6 +9,7 @@ import apiHandler from "@/utils/apiHandler";
 import { TokenResponse } from "@react-oauth/google";
 import { ContactData } from "@/interface/user/contactInterface";
 import { resetPass } from "@/interface/user/resetPassword";
+import { bookingDetails } from "@/interface/user/workspaceInterface";
 
 export const signUp = async (
     userData: signupInterface
@@ -177,6 +178,23 @@ export const checkAvailability = async (workspaceId: string, data: any) => {
         return Promise.reject()
     }
 }
+
+export const pendingBookings = async (
+    workspaceId: string,
+    bookingDetails: bookingDetails | undefined,
+    pricePerHour: string
+  ) => {
+    try {
+      return await Api.post(userEndpoints.pendingBooking, {
+        workspaceId,
+        bookingDetails,
+        pricePerHour,
+      });
+    } catch (error) {
+      apiHandler(error);
+      return Promise.reject();
+    }
+  };
 
 export const bookings = async (payload: any) => {
     try {
