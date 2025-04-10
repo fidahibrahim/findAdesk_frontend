@@ -18,10 +18,12 @@ export interface workspaceData {
 }
 
 export interface bookingDetails {
+    workspaceId?: string;
     date: string;
     startTime: string;
     endTime: string;
     seats: string;
     day: string;
     price: number;
+    status?: string 
 }

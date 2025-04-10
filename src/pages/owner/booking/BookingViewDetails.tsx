@@ -14,11 +14,11 @@ import Navbar from '@/components/owner/Navbar';
 import Header from '@/components/owner/Header';
 import { getBookingDetails } from '@/services/api/owner';
 import { useLocation } from 'react-router-dom';
-import { BookingDetails } from '@/interface/owner/BookingInterfaces';
+import { BookingDetailsInt } from '@/interface/owner/BookingInterfaces';
 import handleError from '@/utils/errorHandler';
 
 const BookingViewDetails: React.FC = () => {
-    const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
+    const [bookingDetails, setBookingDetails] = useState<BookingDetailsInt | null>(null);
     const [loading, setLoading] = useState(true);
 
     const location = useLocation()
@@ -50,10 +50,14 @@ const BookingViewDetails: React.FC = () => {
         });
     };
 
-    const formatTime = (time: string) => {
-        return new Date(time).toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit'
+    const formatTime = (time: string | Date | null | undefined) => {
+        if (!time) return "Not selected";
+
+        return new Date(time).toLocaleTimeString([], {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+            timeZone: "UTC"
         });
     };
 

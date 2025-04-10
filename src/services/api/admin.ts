@@ -115,9 +115,9 @@ export const updateStatus = async (workspaceId: string | undefined, status: stri
     }
 }
 
-export const fetchAdminRevenue = async (filter: any) => {
+export const fetchAdminRevenue = async (filter: string, page: number = 1, limit: number = 5) => {
     try {
-        const response = await Api.get(`${adminEndpoints.getAdminRevenue}?filter=${filter}`)
+        const response = await Api.get(`${adminEndpoints.getAdminRevenue}?filter=${filter}&page=${page}&limit=${limit}`)
         return response
     } catch (error) {
         apiHandler(error)

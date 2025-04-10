@@ -19,7 +19,9 @@ import ResetPassword from "@/pages/user/profile/ResetPassword"
 import Checkout from "@/pages/user/booking/Checkout"
 import Activity from "@/pages/user/profile/Activity"
 import BookingConfirmation from "@/pages/user/booking/BookingConfirmation"
-// import BookingConfirmation from "@/pages/user/booking/BookingConfirmation"
+import BookingDetails from "@/pages/user/booking/BookingDetails"
+import Wallet from "@/pages/user/profile/Wallet"
+import SavedWorkspaceDetails from "@/pages/user/explore/SavedWorkspaceDetails"
 
 
 const UserRouter = () => {
@@ -35,15 +37,18 @@ const UserRouter = () => {
                 < Route path="/profile" element={<WithAuth component={ProfilePage} />} />
                 < Route path="/editProfile" element={<WithAuth component={EditProfile} />} />
                 < Route path="/profile/resetPassword" element={<WithAuth component={ResetPassword} />} />
-                <Route path="/profile/activity" element={<WithAuth component={Activity} />} />
+                < Route path="/profile/activity" element={<WithAuth component={Activity} />} />
+                < Route path="/profile/wallet" element={<WithAuth component={Wallet} />} />
                 < Route path="/aboutUs" element={<AboutUs />} />
                 < Route path="/contactUs" element={<ContactUs />} />
                 < Route path="/termsAndConditions" element={<TermsAndConditions />} />
                 < Route path="/explore" element={<Explore />} />
                 < Route path="/searchWorkspace" element={<WithAuth component={Filtered} />} />
                 < Route path="/workspaceDetails" element={<WithAuth component={WorkspaceDetails} />} />
+                < Route path="/workspaceDetails/:workspaceId" element={<WithAuth component={SavedWorkspaceDetails} />} />
                 < Route path="/checkout/:bookingId" element={<WithAuth component={Checkout} />} />
-                < Route path="/bookingConfirmation/:bookingId" element={<WithAuth component={BookingConfirmation} /> } />
+                < Route path="/bookingConfirmation/:bookingId" element={<WithAuth component={BookingConfirmation} />} />
+                < Route path="/bookingDetails/:bookingId" element={<WithAuth component={BookingDetails} />} />
             </Routes>
         </>
     )

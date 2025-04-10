@@ -1,6 +1,6 @@
 import Footer from "@/components/user/Footer"
 import Header from "@/components/user/Header"
-import { BookingDetails } from "@/interface/owner/BookingInterfaces";
+import { BookingDetailsInt } from "@/interface/owner/BookingInterfaces";
 import { bookingConfirmDetails } from "@/services/api/user";
 import handleError from "@/utils/errorHandler";
 import { CreditCard, User, CheckCircle } from "lucide-react"
@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 
 const BookingConfirmation = () => {
     const { bookingId } = useParams<{ bookingId: string }>();
-    const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
+    const [bookingDetails, setBookingDetails] = useState<BookingDetailsInt | null>(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -45,6 +45,8 @@ const BookingConfirmation = () => {
         return new Date(time).toLocaleTimeString("en-US", {
             hour: "2-digit",
             minute: "2-digit",
+            hour12: true,
+            timeZone: "UTC",
         });
     };
 

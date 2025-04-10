@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import Layout from './Sidebar';
 import BookingCard from './BookingCard';
-import { BookingDetails } from '@/interface/owner/BookingInterfaces';
+import { BookingDetailsInt } from '@/interface/owner/BookingInterfaces';
 import handleError from '@/utils/errorHandler';
 import { fetchBookingHistory } from '@/services/api/user';
 
 const Activity = () => {
-    const [bookings, setBookings] = useState<BookingDetails[] | null>(null)
+    const [bookings, setBookings] = useState<BookingDetailsInt[] | null>(null)
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [filter, setFilter] = useState('all');
@@ -14,21 +14,13 @@ const Activity = () => {
     useEffect(() => {
         const fetchBookingDetails = async () => {
             try {
-                console.log('Fetching booking history...');
-                const response = await fetchBookingHistory();
-
-                console.log('Full response:', response);
-                console.log('Response data:', response.data);
-
+                const response = await fetchBookingHistory(filter);
                 if (response && response.data && response.data.data) {
-                    console.log('Bookings found:', response.data.data);
                     setBookings(response.data.data);
                 } else {
-                    console.warn('No bookings data found in response');
                     setBookings([]);
                 }
             } catch (error) {
-                console.error('Error in fetchBookingDetails:', error);
                 handleError(error);
                 setError('Failed to fetch bookings');
                 setBookings([]);
@@ -38,7 +30,13 @@ const Activity = () => {
         };
 
         fetchBookingDetails();
-    }, []);
+    }, [filter]);
+    const getPageTitle = () => {
+        if (filter === 'saved') {
+            return 'Saved Workspaces';
+        }
+        return 'Booking History';
+    };
     if (loading) {
         return (
             <Layout>
@@ -57,7 +55,7 @@ const Activity = () => {
         <Layout>
             <div className="container mx-auto px-4 py-8">
                 <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-2xl font-bold text-gray-900">Booking History</h2>
+                    <h2 className="text-2xl font-bold text-gray-900">{getPageTitle()}</h2>
                     <select
                         className="px-4 py-2 border-2 border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         value={filter}
@@ -65,6 +63,7 @@ const Activity = () => {
                     >
                         <option value="all">All Bookings</option>
                         <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
                         <option value="saved">Saved</option>
                     </select>
                 </div>

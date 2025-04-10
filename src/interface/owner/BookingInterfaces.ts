@@ -11,13 +11,14 @@ interface Workspace {
     place: string;
     state: string;
     workspaceMail: string;
+    spaceDescription?: string
     images?: [],
     _id: string;
 }
 
-export interface BookingDetails {
+export interface BookingDetailsInt {
     _id: string;
-    bookingId: string;
+    bookingId: string ;
     date: string;
     startTime: string;
     endTime: string;

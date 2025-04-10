@@ -1,0 +1,225 @@
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+    Calendar, Clock, MapPin, Users,
+    ArrowLeft, Clipboard, CreditCard,
+    Star
+} from 'lucide-react';
+import Layout from '../profile/Sidebar';
+import { BookingDetailsInt } from '@/interface/owner/BookingInterfaces';
+import handleError from '@/utils/errorHandler';
+import { fetchBookingDetails } from '@/services/api/user';
+import ReviewForm from './ReviewForm';
+
+const BookingDetails = () => {
+    const { bookingId } = useParams<{ bookingId: string }>();
+    const [booking, setBooking] = useState<BookingDetailsInt | null>(null)
+    const [loading, setLoading] = useState(true);
+    const [showReviewForm, setShowReviewForm] = useState(false);
+
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        const getBookingDetail = async () => {
+            try {
+                setLoading(true);
+                const response = await fetchBookingDetails(bookingId!)
+                if (response && response.data) {
+                    setBooking(response.data.data);
+                }
+            } catch (error) {
+                handleError(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        if (bookingId) {
+            getBookingDetail();
+        }
+    }, [bookingId]);
+
+    const formatDate = (date: any) => {
+        return new Date(date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    };
+
+    const formatTime = (date: any) => {
+        return new Date(date).toLocaleTimeString('en-US', {
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+            timeZone: "UTC",
+        });
+    };
+
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case 'completed':
+                return 'bg-green-100 text-green-800';
+            case 'cancelled':
+                return 'bg-red-100 text-red-800';
+            case 'pending':
+                return 'bg-yellow-100 text-yellow-800';
+            case 'saved':
+                return 'bg-blue-100 text-blue-800';
+            default:
+                return 'bg-gray-100 text-gray-800';
+        }
+    };
+
+    const handleGoBack = () => {
+        navigate(-1);
+    };
+
+    if (loading) {
+        return (
+            <Layout>
+                <div className="text-center py-12">Loading booking details...</div>
+            </Layout>
+        );
+    }
+
+    if (!booking) {
+        return (
+            <Layout>
+                <div className="text-center py-12 text-gray-500">Booking not found</div>
+            </Layout>
+        );
+    }
+
+    return (
+        <Layout>
+            <div className="container mx-auto px-4 py-8">
+                <div className="mb-6">
+                    <button
+                        onClick={handleGoBack}
+                        className="flex items-center text-blue-600 hover:text-blue-800 font-medium mb-4"
+                    >
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Back to Bookings
+                    </button>
+                    <div className="flex justify-between items-center">
+                        <h1 className="text-2xl font-bold text-gray-900">Booking Details</h1>
+                        <span
+                            className={`px-4 py-1 rounded-full text-sm font-semibold ${getStatusColor(booking?.status)}`}
+                        >
+                            {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                        </span>
+                    </div>
+                </div>
+
+                {/* Workspace Preview */}
+                <div className="bg-blue-50 rounded-xl shadow-sm overflow-hidden mb-6 flex">
+                    <img
+                        src={booking.workspaceId.images ? booking.workspaceId.images[0] : 'no image found'}
+                        alt={booking.workspaceId.workspaceName}
+                        className="w-32 ml-4 rounded-md h-auto object-cover"
+                    />
+                    <div className="ml-4 p-4 flex-1">
+                        <h2 className="text-xl font-bold text-gray-900 mb-1">{booking.workspaceId.workspaceName}</h2>
+                        <p className="text-base text-gray-700 ">{booking.workspaceId.spaceDescription}</p>
+                        <div className="flex items-center text-base text-gray-600">
+                            <MapPin className="w-3 h-3 mr-1" />
+                            <span>{booking.workspaceId.place}, {booking.workspaceId.street}, {booking.workspaceId.state}</span>
+                        </div>
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    {/* Payment Information */}
+                    <div className="bg-blue-50 rounded-xl shadow-sm p-6">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Details</h3>
+                        <div className="space-y-3">
+                            <div className="flex justify-between items-center text-gray-700">
+                                <span>Base price</span>
+                                <span>₹{booking.total.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between items-center text-gray-700">
+                                <span>Service Fee (10%)</span>
+                                <span>₹{booking.serviceFee.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between items-center text-gray-700">
+                                <span>Additional Seats</span>
+                                <span>₹{booking.additionalSeatsAmount.toFixed(2)}</span>
+                            </div>
+                            <div className="border-t pt-2 mt-2">
+                                <div className="flex justify-between items-center font-semibold">
+                                    <span>Total</span>
+                                    <span className="text-lg">₹{booking.grandTotal.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <div className="mt-4 pt-4 border-t flex items-center">
+                                <CreditCard className="w-5 h-5 text-green-600 mr-2" />
+                                <span className="text-green-700 font-medium">
+                                    {booking.paymentMethod || 'Credit Card'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-blue-50 rounded-xl shadow-sm p-6 md:col-span-2">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Booking Information</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="flex items-start space-x-3">
+                                <Calendar className="w-5 h-5 text-blue-600 mt-0.5" />
+                                <div>
+                                    <p className="text-sm text-gray-500">Date</p>
+                                    <p className="font-medium">{formatDate(booking.date)}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start space-x-3">
+                                <Clock className="w-5 h-5 text-blue-600 mt-0.5" />
+                                <div>
+                                    <p className="text-sm text-gray-500">Time</p>
+                                    <p className="font-medium">{formatTime(booking.startTime)} - {formatTime(booking.endTime)}</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start space-x-3">
+                                <Users className="w-5 h-5 text-blue-600 mt-0.5" />
+                                <div>
+                                    <p className="text-sm text-gray-500">Guests</p>
+                                    <p className="font-medium">{booking.seats} people</p>
+                                </div>
+                            </div>
+                            <div className="flex items-start space-x-3">
+                                <Clipboard className="w-5 h-5 text-blue-600 mt-0.5" />
+                                <div>
+                                    <p className="text-sm text-gray-500">Booking ID</p>
+                                    <p className="font-medium">{booking.bookingId}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mb-6">
+                        {booking.status === 'pending' && (
+                            <button className="px-4 py-3 bg-blue-700 text-white font-normal rounded-lg shadow-sm transition-colors">
+                                Complete Booking
+                            </button>
+                        )}
+
+                        {booking.status === 'completed' && !showReviewForm && (
+                            <a
+                                onClick={() => setShowReviewForm(true)}
+                                className="text-blue-500 underline font-normal cursor-pointer flex items-center"
+                                href="#"
+                            >
+                                <Star className="w-5 h-5 mr-2" />
+                                Rate & Review Workspace
+                            </a>
+                        )}
+                    </div>
+                    {showReviewForm && booking.status === 'completed' && (
+                        <ReviewForm
+                            workspaceName={booking.workspaceId.workspaceName}
+                            bookingId={booking.bookingId}
+                            onCancel={() => setShowReviewForm(false)}
+                        />
+                    )}
+                </div>
+            </div>
+        </Layout>
+    );
+};
+
+export default BookingDetails;

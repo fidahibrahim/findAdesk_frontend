@@ -65,7 +65,7 @@ const WorkspaceDetails: React.FC<WorkspaceDetailsProps> = ({
             <p className="text-xs text-gray-500">Date</p>
             <p className="font-medium">
               {bookingDetails?.date
-                ? new Date(bookingDetails.date).toLocaleDateString("en-GB") // Formats as DD/MM/YYYY
+                ? new Date(bookingDetails.date).toLocaleDateString("en-GB") 
                 : "Not selected"}
             </p>
           </div>

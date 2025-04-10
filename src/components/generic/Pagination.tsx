@@ -6,11 +6,10 @@ interface PaginationProps {
     setPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
-
 const Pagination = ({ page, totalPages, setPage }: PaginationProps) => {
     return (
         <>
-            <div className="flex pl-64 justify-center gap-0 py-28 ">
+            <div className="flex pl-56 justify-center gap-0 py-24 ">
                 <button
                     onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
                     disabled={page === 1}

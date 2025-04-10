@@ -237,7 +237,6 @@ import { checkoutBookingDetails } from "@/interface/user/checkoutPageInterface";
 
 const Checkout = () => {
     const { bookingId } = useParams();
-    console.log("bookingId", bookingId);
 
     const [bookingDetails, setBookingDetails] =
         useState<checkoutBookingDetails>();

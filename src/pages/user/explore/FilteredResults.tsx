@@ -10,7 +10,6 @@ interface FilteredResultsProps {
   workspaces: workspaceData[];
 }
 
-
 const FilteredResults = ({ workspaces }: FilteredResultsProps) => {
   
   const [sortedWorkspaces, setSortedWorkspaces] = useState<workspaceData[]>([]);

@@ -10,7 +10,7 @@ import { TokenResponse } from "@react-oauth/google";
 import { ContactData } from "@/interface/user/contactInterface";
 import { resetPass } from "@/interface/user/resetPassword";
 import { bookingDetails } from "@/interface/user/workspaceInterface";
-import { BookingDetails } from "@/interface/owner/BookingInterfaces";
+import { BookingDetailsInt } from "@/interface/owner/BookingInterfaces";
 
 export const signUp = async (
     userData: signupInterface
@@ -215,18 +215,36 @@ export const getBookingDetails = async (bookingId: string) => {
     }
 }
 
-export const fetchBookingHistory = async (): Promise<{ data: { data: BookingDetails[] } }> => {
+export const fetchBookingHistory = async (filter: string = 'all'): Promise<{ data: { data: BookingDetailsInt[] } }> => {
     try {
-        const response = await Api.get(userEndpoints.getBookingHistory)
+        const response = await Api.get(`${userEndpoints.getBookingHistory}?filter=${filter}`)
         return response
     } catch (error) {
         throw error
     }
 }
 
-export const bookingConfirmDetails = async (bookingId: string|undefined) => {
+export const bookingConfirmDetails = async (bookingId: string | undefined) => {
     try {
         const response = await Api.get(`${userEndpoints.bookingConfirmDetails}?bookingId=${bookingId}`)
+        return response
+    } catch (error) {
+        throw error
+    }
+}
+
+export const fetchBookingDetails = async (bookingId: string) => {
+    try {
+        const response = await Api.get(`${userEndpoints.fetchBookingDetails}?bookingId=${bookingId}`)
+        return response
+    } catch (error) {
+        throw error
+    }
+}
+
+export const saveWorkspace = async (workspaceId: string, isSaved: boolean) => {
+    try {
+        const response = await Api.post(userEndpoints.saveWorkspace, { workspaceId, isSaved })
         return response
     } catch (error) {
         throw error
