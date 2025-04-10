@@ -1,14 +1,18 @@
+import { submitReview } from '@/services/api/user';
 import handleError from '@/utils/errorHandler';
 import { MessageSquare, Star, X } from 'lucide-react'
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface ReviewFormProps {
     workspaceName: string;
     bookingId: string;
+    workspaceId: string;
     onCancel: () => void;
+    onSuccess?: () => void;
 }
 
-const ReviewForm = ({ workspaceName, bookingId, onCancel }: ReviewFormProps) => {
+const ReviewForm = ({ workspaceName, bookingId, workspaceId, onCancel, onSuccess}: ReviewFormProps) => {
     const [rating, setRating] = useState(0);
     const [review, setReview] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,19 +39,22 @@ const ReviewForm = ({ workspaceName, bookingId, onCancel }: ReviewFormProps) => 
     const handleSubmitReview = async (e: React.FormEvent) => {
         e.preventDefault();
         if (rating === 0) {
-            alert('Please select a rating');
+            toast.error('Please select a rating')
             return;
         }
         try {
             setIsSubmitting(true);
-            // Replace with your API call to submit the review
-            // Example: await submitReview(bookingId, { rating, review });
-            // Mock success response
-            setTimeout(() => {
-                alert('Review submitted successfully!');
-                onCancel()
-                setIsSubmitting(false);
-            }, 1000);
+            const response = await submitReview({
+                workspaceId,
+                bookingId,
+                rating,
+                review
+            })
+            console.log(response)
+            toast.success('Review submitted successfully!');
+            if (onSuccess) onSuccess();
+            onCancel();
+            
         } catch (error) {
             handleError(error);
             setIsSubmitting(false);

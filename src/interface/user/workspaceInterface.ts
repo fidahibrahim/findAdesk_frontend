@@ -15,6 +15,8 @@ export interface workspaceData {
     workspaceRules: string[];
     amenities: string[];
     images: string[];
+    rating?: number;
+    totalRatings?: number;
 }
 
 export interface bookingDetails {
@@ -25,5 +27,5 @@ export interface bookingDetails {
     seats: string;
     day: string;
     price: number;
-    status?: string 
+    status?: string
 }

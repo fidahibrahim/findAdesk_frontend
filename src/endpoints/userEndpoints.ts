@@ -22,8 +22,9 @@ const userEndpoints = {
     bookingConfirmDetails: '/api/bookingConfirmDetails',
     fetchBookingDetails: '/api/fetchBookingDetails',
     saveWorkspace: '/api/saveWorkspace',
+    addReview: '/api/addReview',
+    getReviews: '/api/getReviews',
     
-
 }
 
 export default userEndpoints

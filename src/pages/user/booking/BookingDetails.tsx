@@ -8,12 +8,22 @@ import {
 import Layout from '../profile/Sidebar';
 import { BookingDetailsInt } from '@/interface/owner/BookingInterfaces';
 import handleError from '@/utils/errorHandler';
-import { fetchBookingDetails } from '@/services/api/user';
+import { bookings, fetchBookingDetails } from '@/services/api/user';
 import ReviewForm from './ReviewForm';
+import { loadStripe } from "@stripe/stripe-js";
 
+interface Rating {
+    userId: string;
+    review: string;
+    rating: number;
+    createdAt: string;
+}
+interface ExtendedBookingDetails extends BookingDetailsInt {
+    ratings?: Rating[];
+}
 const BookingDetails = () => {
     const { bookingId } = useParams<{ bookingId: string }>();
-    const [booking, setBooking] = useState<BookingDetailsInt | null>(null)
+    const [booking, setBooking] = useState<ExtendedBookingDetails | null>(null)
     const [loading, setLoading] = useState(true);
     const [showReviewForm, setShowReviewForm] = useState(false);
 
@@ -24,8 +34,14 @@ const BookingDetails = () => {
             try {
                 setLoading(true);
                 const response = await fetchBookingDetails(bookingId!)
+                console.log(response, 'res')
                 if (response && response.data) {
-                    setBooking(response.data.data);
+                    const bookingData = response.data.data._doc;
+                    const ratings = response.data.data.ratings || [];
+                    setBooking({
+                        ...bookingData,
+                        ratings
+                    });
                 }
             } catch (error) {
                 handleError(error);
@@ -37,6 +53,26 @@ const BookingDetails = () => {
             getBookingDetail();
         }
     }, [bookingId]);
+
+    const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        try {
+            const paymentMethod = "paymentGateway";
+
+            const bookingData = {
+                ...booking,
+                paymentMethod,
+            };
+
+            const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+            const stripe = await loadStripe(stripeKey);
+            const response = await bookings(bookingData);
+            stripe?.redirectToCheckout({ sessionId: response.data.data.id });
+        } catch (error) {
+            console.log(error)
+            handleError(error);
+        }
+    };
 
     const formatDate = (date: any) => {
         return new Date(date).toLocaleDateString('en-US', {
@@ -73,6 +109,9 @@ const BookingDetails = () => {
     const handleGoBack = () => {
         navigate(-1);
     };
+
+    const hasReview = booking?.ratings && booking.ratings.length > 0;
+    const userReview = hasReview && booking?.ratings ? booking.ratings[0] : null;
 
     if (loading) {
         return (
@@ -193,27 +232,68 @@ const BookingDetails = () => {
                     </div>
                     <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 mb-6">
                         {booking.status === 'pending' && (
-                            <button className="px-4 py-3 bg-blue-700 text-white font-normal rounded-lg shadow-sm transition-colors">
+                            <button
+                                onClick={handleSubmit}
+                                className="px-4 py-3 bg-blue-700 text-white font-normal rounded-lg shadow-sm transition-colors">
                                 Complete Booking
                             </button>
                         )}
 
-                        {booking.status === 'completed' && !showReviewForm && (
-                            <a
-                                onClick={() => setShowReviewForm(true)}
-                                className="text-blue-500 underline font-normal cursor-pointer flex items-center"
-                                href="#"
-                            >
-                                <Star className="w-5 h-5 mr-2" />
-                                Rate & Review Workspace
-                            </a>
+                        {booking.status === 'completed' && (
+                            <div className='mb-6'>
+                                {hasReview && userReview ? (
+                                    <div className="bg-blue-50 rounded-xl shadow-sm p-6 w-full">
+                                        <div className="flex flex-col md:flex-row md:items-start md:justify-between">
+                                            <div className="md:w-3/3">
+                                                {/* <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                                                    Your Review
+                                                </h3> */}
+                                                <div className="mb-2">
+                                                    <div className="text-sm text-gray-500 mt-1">
+                                                        review added at:{new Date(userReview.createdAt).toLocaleDateString()}
+                                                    </div>
+                                                    <div className="flex items-center">
+                                                        {[1, 2, 3, 4, 5].map((star) => (
+                                                            <Star
+                                                                key={star}
+                                                                className={`w-5 h-5 ${star <= userReview?.rating
+                                                                    ? 'text-yellow-400 fill-yellow-400'
+                                                                    : 'text-gray-300'}`}
+                                                            />
+                                                        ))}
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            {userReview?.review && (
+                                                <div className="md:w-3/3 ml-4 mt-4 md:mt-2">
+                                                    <div className="text-gray-700 bg-white p-2 rounded-lg border border-gray-100">
+                                                        "{userReview.review}"
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ) : !showReviewForm ? (
+                                    <a
+                                        onClick={() => setShowReviewForm(true)}
+                                        className="text-blue-500 underline font-normal cursor-pointer flex items-center"
+                                    >
+                                        <Star className="w-5 h-5 mr-2" />
+                                        Rate & Review Workspace
+                                    </a>
+                                ) : null}
+                            </div>
                         )}
                     </div>
-                    {showReviewForm && booking.status === 'completed' && (
+                    {showReviewForm && booking.status === 'completed' && !hasReview && (
                         <ReviewForm
                             workspaceName={booking.workspaceId.workspaceName}
                             bookingId={booking.bookingId}
+                            workspaceId={booking.workspaceId._id}
                             onCancel={() => setShowReviewForm(false)}
+                            onSuccess={() => window.location.reload()}
                         />
                     )}
                 </div>

@@ -16,6 +16,13 @@ interface Workspace {
     _id: string;
 }
 
+interface Rating {
+    userId: string;
+    review: string;
+    rating: number;
+    createdAt: string;
+}
+
 export interface BookingDetailsInt {
     _id: string;
     bookingId: string ;
@@ -34,4 +41,5 @@ export interface BookingDetailsInt {
     additionalSeats: number;
     userId: User;
     workspaceId: Workspace;
+    ratings?: Rating[]
 }

@@ -5,7 +5,7 @@ import {
   bookingDetails,
   workspaceData,
 } from "@/interface/user/workspaceInterface";
-import { pendingBookings, saveWorkspace, workspaceDetails } from "@/services/api/user";
+import { getWorkspaceReviews, pendingBookings, saveWorkspace, workspaceDetails } from "@/services/api/user";
 import handleError from "@/utils/errorHandler";
 import {
   Clock,
@@ -20,6 +20,7 @@ import {
   ArrowLeft,
   BookmarkCheck,
   Bookmark,
+  Star,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -27,6 +28,8 @@ import AvailabilityChecker from "./AvailabilityChecker";
 import Loader from "@/components/generic/Loader";
 import ImageSlider from "@/components/user/ImageSlider";
 import { toast } from "sonner";
+import { ReviewData } from "@/interface/user/reviewInterface";
+import Reviews from "./Reviews";
 
 const WorkspaceDetails = () => {
   const location = useLocation();
@@ -37,6 +40,8 @@ const WorkspaceDetails = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [isSaved, setIsSaved] = useState<boolean>(false);
   const [saveLoading, setSaveLoading] = useState<boolean>(false);
+  const [reviews, setReviews] = useState<ReviewData | null>(null);
+  const [reviewsLoading, setReviewsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,7 +58,7 @@ const WorkspaceDetails = () => {
               : [];
           }
           setWorkspace(data);
-          
+
           if (data.isSaved !== undefined) {
             setIsSaved(data.isSaved);
           }
@@ -64,9 +69,26 @@ const WorkspaceDetails = () => {
         setLoading(false);
       }
     };
+
+    const fetchReviews = async (workspaceId: string) => {
+      try {
+        const response = await getWorkspaceReviews(workspaceId);
+        console.log(response)
+        if (response.status === 200) {
+          setReviews(response.data.data);
+        }
+      } catch (error) {
+        handleError(error)
+      } finally {
+        setReviewsLoading(false);
+      }
+    };
+
     fetchData(workspaceId);
+    fetchReviews(workspaceId);
     return () => {
       setWorkspace(null);
+      setReviews(null)
     };
   }, [workspaceId]);
 
@@ -150,6 +172,18 @@ const WorkspaceDetails = () => {
               <h1 className="text-3xl font-bold mb-2">
                 {workspace.workspaceName}
               </h1>
+              {!reviewsLoading && reviews && (
+                <div className="flex items-center gap-1 bg-blue-50 text-blue-700 px-2 py-1 rounded">
+                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  <span className="font-medium">
+                    {reviews.averageRating ? reviews.averageRating.toFixed(1) : "New"}
+                  </span>
+                  <span className="text-sm text-blue-500">
+                    ({reviews.ratings?.length || 0})
+                  </span>
+                </div>
+              )}
+
               <div className="flex items-center gap-2 text-gray-600">
                 <MapPin className="w-4 h-4" />
                 <span>
@@ -304,7 +338,7 @@ const WorkspaceDetails = () => {
           )}
 
           {/* Rules */}
-          <Card>
+          <Card className="mb-8">
             <CardHeader>
               <CardTitle>Workspace Rules</CardTitle>
             </CardHeader>
@@ -320,6 +354,11 @@ const WorkspaceDetails = () => {
               </div>
             </CardContent>
           </Card>
+
+          <Reviews
+            reviews={reviews}
+            reviewsLoading={reviewsLoading}
+          />
 
           <div className="flex items-center justify-between mt-6">
             <button

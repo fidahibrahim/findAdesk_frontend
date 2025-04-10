@@ -211,7 +211,8 @@ export const getBookingDetails = async (bookingId: string) => {
         const response = await Api.get(`${userEndpoints.getBookingDetails}?bookingId=${bookingId}`)
         return response
     } catch (error) {
-        throw error
+        apiHandler(error)
+        return Promise.reject()
     }
 }
 
@@ -220,7 +221,8 @@ export const fetchBookingHistory = async (filter: string = 'all'): Promise<{ dat
         const response = await Api.get(`${userEndpoints.getBookingHistory}?filter=${filter}`)
         return response
     } catch (error) {
-        throw error
+        apiHandler(error)
+        return Promise.reject()
     }
 }
 
@@ -229,7 +231,8 @@ export const bookingConfirmDetails = async (bookingId: string | undefined) => {
         const response = await Api.get(`${userEndpoints.bookingConfirmDetails}?bookingId=${bookingId}`)
         return response
     } catch (error) {
-        throw error
+        apiHandler(error)
+        return Promise.reject()
     }
 }
 
@@ -238,7 +241,8 @@ export const fetchBookingDetails = async (bookingId: string) => {
         const response = await Api.get(`${userEndpoints.fetchBookingDetails}?bookingId=${bookingId}`)
         return response
     } catch (error) {
-        throw error
+        apiHandler(error)
+        return Promise.reject()
     }
 }
 
@@ -247,6 +251,32 @@ export const saveWorkspace = async (workspaceId: string, isSaved: boolean) => {
         const response = await Api.post(userEndpoints.saveWorkspace, { workspaceId, isSaved })
         return response
     } catch (error) {
-        throw error
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const submitReview = async (reviewData: {
+    workspaceId: string;
+    bookingId: string;
+    rating: number;
+    review?: string;
+}) => {
+    try {
+        const response = await Api.post(userEndpoints.addReview, reviewData)
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const getWorkspaceReviews = async (workspaceId: string) => {
+    try {
+        const response =  await Api.get(`${userEndpoints.getReviews}?workspaceId=${workspaceId}`)
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
     }
 }
