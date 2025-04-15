@@ -97,14 +97,14 @@ const Layout = ({ children }: any) => {
                         </a>
 
                         <a
-                            href="/termsAndConditions"
+                            href="/help"
                             className={`w-full flex items-center px-4 py-3 rounded-xl transition-all duration-200
-                            ${location.pathname === '/termsAndConditions'
+                            ${location.pathname === '/help'
                                     ? 'bg-blue-50 text-blue-700 shadow-sm'
                                     : 'text-gray-700 hover:bg-gray-50'
                                 }`}
                         >
-                            <HelpCircle className={`h-5 w-5 ${location.pathname === '/termsAndConditions' ? 'text-blue-700' : 'text-gray-500'}`} />
+                            <HelpCircle className={`h-5 w-5 ${location.pathname === '/help' ? 'text-blue-700' : 'text-gray-500'}`} />
                             {isSidebarOpen && (
                                 <div className="ml-3 text-left">
                                     <span className="font-medium block">Help & Support</span>

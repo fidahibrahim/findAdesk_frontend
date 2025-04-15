@@ -181,3 +181,23 @@ export const getBookingDetails = async (bookingId: string) => {
         return Promise.reject()
     }
 }
+
+export const getDashboardData = async () => {
+    try {
+        const response = await Api.get(ownerEndpoints.getDashboardData)
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const getAllReviews = async () => {
+    try {
+        const response = await Api.get(ownerEndpoints.getAllReviews)
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}

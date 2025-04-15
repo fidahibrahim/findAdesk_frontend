@@ -24,6 +24,9 @@ const userEndpoints = {
     saveWorkspace: '/api/saveWorkspace',
     addReview: '/api/addReview',
     getReviews: '/api/getReviews',
+    fetchWallet: '/api/wallet',
+    cancelBooking: '/api/booking/cancel',
+    walletPayment: '/api/bookings/walletPayment',
     
 }
 

@@ -28,8 +28,9 @@ const BookingViewDetails: React.FC = () => {
         const fetchBookingDetails = async (bookingId: string) => {
             try {
                 const response = await getBookingDetails(bookingId)
+                console.log(response)
                 if (response) {
-                    setBookingDetails(response.data.data);
+                    setBookingDetails(response.data.data._doc);
                     setLoading(false);
                 }
             } catch (error) {
@@ -93,7 +94,7 @@ const BookingViewDetails: React.FC = () => {
                             <div className={`mt-4 md:mt-0 px-4 py-2 rounded-full flex items-center 
                                 ${bookingDetails.status === 'pending'
                                     ? 'bg-yellow-500'
-                                    : bookingDetails.status === 'confirmed'
+                                    : bookingDetails.status === 'completed'
                                         ? 'bg-green-500'
                                         : 'bg-red-500'
                                 }`}>
@@ -198,8 +199,7 @@ const BookingViewDetails: React.FC = () => {
                                 </div>
                                 <div className="flex items-center">
                                     <CreditCard className="mr-2 text-blue-500" size={20} />
-                                    {/* <span className="text-gray-600">{bookingDetails.paymentMethod || 'Not Specified'}</span> */}
-                                    <span className="text-gray-600">Card</span>
+                                    <span className="text-gray-600">{bookingDetails.paymentMethod || 'Not Specified'}</span>
                                 </div>
                             </div>
                         </div>

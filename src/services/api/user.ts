@@ -280,3 +280,33 @@ export const getWorkspaceReviews = async (workspaceId: string) => {
         return Promise.reject()
     }
 }
+
+export const fetchWallet = async () => {
+    try {
+        const response = await Api.get(userEndpoints.fetchWallet)
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const cancelBooking = async (bookingId: string) => {
+    try {
+        const response = await Api.patch(`${userEndpoints.cancelBooking}?bookingId=${bookingId}`)
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
+
+export const walletPayment = async (payload: any) =>{
+    try {
+        const response = await Api.post(userEndpoints.walletPayment,{ payload })
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}

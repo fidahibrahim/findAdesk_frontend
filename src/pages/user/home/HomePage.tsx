@@ -39,7 +39,7 @@ const HomePage = () => {
           <h1 className="text-7xl font-serif -tracking-tighter text-[#20425a] mb-9">
             Find Your<br />Desk Here
           </h1>
-          <button className="bg-gray-100 text-gray-800 px-8 py-3 rounded hover:bg-gray-100 transition-colors text-lg">
+          <button  className="bg-gray-100 text-gray-800 px-8 py-3 rounded hover:bg-gray-100 transition-colors text-lg">
             Book your space
           </button>
         </div>

@@ -22,6 +22,8 @@ import BookingConfirmation from "@/pages/user/booking/BookingConfirmation"
 import BookingDetails from "@/pages/user/booking/BookingDetails"
 import Wallet from "@/pages/user/profile/Wallet"
 import SavedWorkspaceDetails from "@/pages/user/explore/SavedWorkspaceDetails"
+import Help from "@/pages/user/profile/Help"
+import Transactions from "@/pages/user/profile/Transactions"
 
 
 const UserRouter = () => {
@@ -35,6 +37,7 @@ const UserRouter = () => {
                 < Route path="/forgotPassword" element={<ForgotPassword />} />
                 < Route path="/resetPassword/:token" element={<ChangePassword />} />
                 < Route path="/profile" element={<WithAuth component={ProfilePage} />} />
+                < Route path="/help" element={<WithAuth component={Help} />} />
                 < Route path="/editProfile" element={<WithAuth component={EditProfile} />} />
                 < Route path="/profile/resetPassword" element={<WithAuth component={ResetPassword} />} />
                 < Route path="/profile/activity" element={<WithAuth component={Activity} />} />
@@ -49,6 +52,7 @@ const UserRouter = () => {
                 < Route path="/checkout/:bookingId" element={<WithAuth component={Checkout} />} />
                 < Route path="/bookingConfirmation/:bookingId" element={<WithAuth component={BookingConfirmation} />} />
                 < Route path="/bookingDetails/:bookingId" element={<WithAuth component={BookingDetails} />} />
+                < Route path="/transactionHistory" element={<WithAuth component={Transactions} />} />
             </Routes>
         </>
     )

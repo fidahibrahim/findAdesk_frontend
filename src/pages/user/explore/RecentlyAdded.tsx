@@ -1,7 +1,7 @@
 import { workspaceData } from "@/interface/user/workspaceInterface";
 import { fetchRecentWorkspaces } from "@/services/api/user";
 import handleError from "@/utils/errorHandler";
-import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, } from "lucide-react";
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 
@@ -15,7 +15,6 @@ const RecentlyAdded = () => {
             try {
                 setIsLoading(true)
                 const response = await fetchRecentWorkspaces()
-                console.log(response)
                 setWorkspaces(response.data.data)
             } catch (error) {
                 handleError(error)
@@ -91,7 +90,7 @@ const RecentlyAdded = () => {
                                 className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent">
-                                <div className="flex items-center text-yellow-600">
+                                {/* <div className="flex items-center text-yellow-600">
                                     <Star className="ml-4 mt-3 fill-current h-4 w-4" />
                                     <span className="ml-1 mt-3 text-white">
                                         {workspace.rating?.toFixed(1)}
@@ -99,7 +98,7 @@ const RecentlyAdded = () => {
                                             <span className="text-xs ml-1 text-gray-300">({workspace.totalRatings})</span>
                                         )}
                                     </span>
-                                </div>
+                                </div> */}
                                 <div className="absolute bottom-4 left-4 text-white">
                                     <h3 className="text-xl font-medium mb-1">{workspace.workspaceName}</h3>
                                     <div className="flex items-center gap-2 text-sm">

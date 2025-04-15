@@ -6,7 +6,7 @@ export interface FormValues {
     workspaceMail: string;
     workspaceType: string;
     capacity: string;
-    remainingSeats?: string
+    bookedSeats?: string
     place: string;
     street: string;
     state: string;

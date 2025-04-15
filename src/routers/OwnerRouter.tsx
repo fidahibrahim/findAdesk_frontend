@@ -13,6 +13,7 @@ import Workspace from '@/pages/owner/workspaceManage/Workspace'
 import { Route, Routes } from 'react-router-dom'
 import Booking from '@/pages/owner/booking/Booking'
 import BookingViewDetails from '@/pages/owner/booking/BookingViewDetails'
+import Review from '@/pages/owner/reviews/Review'
 
 const OwnerRouter = () => {
   return (
@@ -30,6 +31,7 @@ const OwnerRouter = () => {
         <Route path='/editWorkspace' element={<WithAuth component={EditWorkspace} />} />
         <Route path='/bookings' element={<WithAuth component={Booking} />} />
         <Route path='/bookingViewDetails' element={<WithAuth component={BookingViewDetails} />} />
+        <Route path='/reviews' element={<WithAuth component={Review} />} />
       </Routes>
     </>
   )

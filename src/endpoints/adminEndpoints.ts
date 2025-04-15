@@ -10,7 +10,9 @@ const adminEndpoints = {
     workspaces: "/admin/getWorkspaces",
     viewDetails: '/admin/workspaceDetails',
     updateStatus: "/admin/updateStatus",
-    getAdminRevenue: "/admin/adminRevenue"
+    getAdminRevenue: "/admin/adminRevenue",
+    fetchDashboardData: '/admin/dashboardData',
+    
 }
 
 export default adminEndpoints

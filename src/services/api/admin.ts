@@ -123,3 +123,12 @@ export const fetchAdminRevenue = async (filter: string, page: number = 1, limit:
         apiHandler(error)
     }
 }
+
+export const getDashboardData = async () => {
+    try {
+        const response = await Api.get(adminEndpoints.fetchDashboardData)
+        return response
+    } catch (error) {
+        apiHandler(error)
+    }
+}

@@ -1,4 +1,4 @@
-import { Home, Settings, FileText, Star, AlertCircle } from "lucide-react";
+import { Home, Settings, FileText, Star, Briefcase } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
 const Navbar = () => {
@@ -32,7 +32,7 @@ const Navbar = () => {
                                 : "text-gray-600 hover:bg-gray-100"
                                 }`}
                         >
-                            <FileText size={20} />
+                            <Briefcase size={20} />
                             <span>Workspace</span>
                         </a>
                         <a
@@ -46,8 +46,8 @@ const Navbar = () => {
                             <span>Bookings</span>
                         </a>
                         <a
-                            href="/reviews"
-                            className={`flex items-center space-x-2 p-2 rounded-lg ${location.pathname === "/reviews"
+                            href="/owner/reviews"
+                            className={`flex items-center space-x-2 p-2 rounded-lg ${location.pathname === "/owner/reviews"
                                 ? "bg-gray-100 text-gray-700"
                                 : "text-gray-600 hover:bg-gray-100"
                                 }`}
@@ -55,17 +55,8 @@ const Navbar = () => {
                             <Star size={20} />
                             <span>Reviews</span>
                         </a>
-                        <a
-                            href="/disputes"
-                            className={`flex items-center space-x-2 p-2 rounded-lg ${location.pathname === "/disputes"
-                                ? "bg-gray-100 text-gray-700"
-                                : "text-gray-600 hover:bg-gray-100"
-                                }`}
-                        >
-                            <AlertCircle size={20} />
-                            <span>Disputes</span>
-                        </a>
-                        <a
+                        
+                        {/* <a
                             href="/settings"
                             className={`flex items-center space-x-2 p-2 rounded-lg ${location.pathname === "/settings"
                                 ? "bg-gray-100 text-gray-700"
@@ -74,7 +65,7 @@ const Navbar = () => {
                         >
                             <Settings size={20} />
                             <span>Settings</span>
-                        </a>
+                        </a> */}
                     </div>
                 </nav>
             </div>

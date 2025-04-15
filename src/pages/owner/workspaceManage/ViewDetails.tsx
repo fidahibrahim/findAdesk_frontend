@@ -106,7 +106,7 @@ const ViewDetails = () => {
                 <h2 className="text-2xl font-bold">{workspace.workspaceName}</h2>
                 <p className="text-gray-600 text-base">{workspace.workspaceType}</p>
                 <p className="text-gray-600 text-base">capacity: {workspace.capacity}</p>
-                <p className="text-gray-600 text-base">Remaining Seats: {parseInt(workspace.capacity) - parseInt(workspace.remainingSeats!)}</p>
+                <p className="text-gray-600 text-base">Remaining Seats: {parseInt(workspace.capacity) - parseInt(workspace.bookedSeats!)}</p>
               </div>
               <div>
                 <p className="text-gray-800 text-base">₹ {workspace.pricePerHour}</p>

@@ -12,6 +12,9 @@ const ownerEndpoints = {
     deleteWorkspace: "/owner/deleteWorkspace",
     listBookings: "/owner/listBookings",
     getBookingDetails: "/owner/bookingViewDetails",
+    getDashboardData: "/owner/dashboardData",
+    getAllReviews: '/owner/getAllReviews',
+    
     
 }
 

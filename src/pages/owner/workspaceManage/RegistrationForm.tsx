@@ -62,7 +62,6 @@ const RegistrationForm = () => {
     };
     const handleSubmit = async (values: FormValues, { setSubmitting }: any) => {
         try {
-            console.log(values.amenities, "aminityyyy")
             const formData = new FormData();
             (Object.keys(values) as (keyof FormValues)[]).forEach((key) => {
                             if (key !== 'images') {
@@ -81,10 +80,7 @@ const RegistrationForm = () => {
                 formData.append('images', image.file);
             });
 
-            formData.forEach((item) => console.log(item))
-
             const response = await workspaceRegister(formData);
-            console.log(response, "response data")
             if (response?.data?.success) {
                 toast.success("Workspace successfully created")
                 navigate('/owner/workspace')

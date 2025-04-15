@@ -76,7 +76,7 @@ const BookingTable: React.FC<UserTableProps> = ({ search, page, setTotalPages })
                                     <td className="py-3 px-12 text-sm">{formatDate(booking.date)}</td>
                                     <td className="py-3 px-11 text-sm">{booking.grandTotal}</td>
                                     <td className="py-3 px-11 text-sm">{booking.status}</td>
-                                    <td className="py-3 px-11 text-sm">Card</td>
+                                    <td className="py-3 px-11 text-sm">{booking.paymentMethod}</td>
                                     <td onClick={() => handleVievClick(booking._id)}
                                         className="py-3 px-10 text-sm text-blue-500 underline"> View </td>
                                 </tr>
