@@ -10,6 +10,7 @@ export interface profileInterface {
     email: string;
     image: any;
     imageFile?: File;
+    isSubscribed?: boolean
 }
 
 

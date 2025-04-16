@@ -36,7 +36,13 @@ const Transactions = () => {
             try {
                 setLoading(true);
                 const response = await fetchWallet();
-                setWalletData(response.data.data);
+                const sortedData = {
+                    ...response.data.data,
+                    transactions: [...response.data.data.transactions].sort(
+                        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+                    )
+                };
+                setWalletData(sortedData);
             } catch (error) {
                 handleError(error);
             } finally {

@@ -27,6 +27,7 @@ const userEndpoints = {
     fetchWallet: '/api/wallet',
     cancelBooking: '/api/booking/cancel',
     walletPayment: '/api/bookings/walletPayment',
+    addSubscription: '/api/subscription/createStripeSession',
     
 }
 

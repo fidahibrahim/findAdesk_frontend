@@ -310,3 +310,13 @@ export const walletPayment = async (payload: any) =>{
         return Promise.reject()
     }
 }
+
+export const addSubscription = async (planType: string, amount: number) => {
+    try {
+        const response = await Api.post(userEndpoints.addSubscription, { planType, amount })
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}

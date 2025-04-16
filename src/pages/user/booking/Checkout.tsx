@@ -1,7 +1,7 @@
 import { bookings, getBookingDetails, walletPayment } from "@/services/api/user";
 import handleError from "@/utils/errorHandler";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "@/components/user/Header";
 import UserInfo from "./UserInfo";
 import WorkspaceDetails from "./WorkspaceDetails";
@@ -13,13 +13,11 @@ import { checkoutBookingDetails } from "@/interface/user/checkoutPageInterface";
 
 const Checkout = () => {
     const { bookingId } = useParams();
-    const [bookingDetails, setBookingDetails] =
-        useState<checkoutBookingDetails>();
-
+    const [bookingDetails, setBookingDetails] = useState<checkoutBookingDetails>();
     const [phoneNumber, setPhoneNumber] = useState<string>("");
     const [paymentMethod, setPaymentMethod] = useState<string>("");
 
-    console.log(paymentMethod, 'payment method selected heree it is')
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchBookingDetails = async (bookingId: string) => {
@@ -40,7 +38,6 @@ const Checkout = () => {
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         try {
-            console.log(paymentMethod, 'payment method selected in handle subit')
             if (!paymentMethod) {
                 message.error("Please select a payment method");
                 return;
@@ -53,6 +50,9 @@ const Checkout = () => {
             if (paymentMethod === 'wallet') {
                 const response = await walletPayment(bookingData)
                 console.log(response)
+                if (response.status === 200) {
+                    navigate(`/bookingConfirmation/${response.data.data}`);
+                }
             } else {
                 const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
                 const stripe = await loadStripe(stripeKey);

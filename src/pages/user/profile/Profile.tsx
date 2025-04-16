@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
-import { User, Edit } from 'lucide-react';
+import { User, Edit, X } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { profileInterface } from '@/interface/user/profileInterface';
-import { getProfile } from '@/services/api/user';
+import { addSubscription, getProfile } from '@/services/api/user';
 import handleError from '@/utils/errorHandler';
 import Layout from './Sidebar';
 import { useNavigate } from 'react-router-dom';
+import { loadStripe } from '@stripe/stripe-js';
 
 const ProfilePage = () => {
     const [profileData, setProfileData] = useState<profileInterface | null>(null);
+    const [showSubscriptionPlans, setShowSubscriptionPlans] = useState(false);
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -24,11 +26,30 @@ const ProfilePage = () => {
         fetchProfile();
     }, []);
 
+    const handleSubscribe = async (planType: string, amount: number) => {
+       
+        const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+        const stripe = await loadStripe(stripeKey);
+        const response = await addSubscription(planType, amount);
+        stripe?.redirectToCheckout({ sessionId: response.data.data.id });
+
+        setShowSubscriptionPlans(false);
+    };
+
     return (
         <div>
             <Layout>
                 <Card className="max-w-4xl mx-auto shadow-md">
-                    <CardContent className="p-8">
+
+                    <CardContent className="p-8 relative">
+                        {profileData && !profileData.isSubscribed && (
+                            <button
+                                className="absolute top-6 right-6 px-7 py-2 text-sm rounded-lg font-medium text-red-700 border-2 border-red-600"
+                                onClick={() => setShowSubscriptionPlans(!showSubscriptionPlans)}
+                            >
+                                Subscribe
+                            </button>
+                        )}
                         <div className="space-y-8">
                             <div className="flex items-center space-x-6 pb-6 border-b">
                                 <div className="w-28 h-28 rounded-full overflow-hidden shadow-md">
@@ -71,6 +92,88 @@ const ProfilePage = () => {
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* Subscription Plans Modal */}
+                {showSubscriptionPlans && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-2xl font-bold">Choose Your Subscription Plan</h2>
+                                <button
+                                    onClick={() => setShowSubscriptionPlans(false)}
+                                    className="text-gray-500 hover:text-gray-700"
+                                >
+                                    <X className="w-6 h-6" />
+                                </button>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-6">
+                                {/* Monthly Plan Card */}
+                                <div className="border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+                                    <div className="bg-blue-50 p-4 border-b">
+                                        <h3 className="text-xl font-bold text-center">Monthly Plan</h3>
+                                    </div>
+                                    <div className="p-6">
+                                        <div className="text-center mb-4">
+                                            <span className="text-3xl font-bold">₹79.00</span>
+                                            <span className="text-gray-500">/month</span>
+                                        </div>
+                                        <ul className="space-y-2 mb-6">
+                                            <li className="flex items-center">
+                                                <span className="text-green-500 mr-2">✓</span>
+                                                Cancel up to 1 hour before booking
+                                            </li>
+                                            <li className="flex items-center">
+                                                <span className="text-green-500 mr-2">✓</span>
+                                                No cancellation fees
+                                            </li>
+
+                                        </ul>
+                                        <Button
+                                            className=" w-full bg-blue-600 hover:bg-blue-700"
+                                            onClick={() => handleSubscribe('monthly',79)}
+                                        >
+                                            Subscribe Now
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                {/* Yearly Plan Card */}
+                                <div className="border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow relative">
+                                    <div className="absolute top-0 right-0 bg-green-500 text-white px-3 py-1 text-sm font-medium rounded-bl-lg">
+                                        Save 20%
+                                    </div>
+                                    <div className="bg-blue-50 p-4 border-b">
+                                        <h3 className="text-xl font-bold text-center">Yearly Plan</h3>
+                                    </div>
+                                    <div className="p-6">
+                                        <div className="text-center mb-4">
+                                            <span className="text-3xl font-bold">₹189.06</span>
+                                            <span className="text-gray-500">/year</span>
+                                            <p className="text-sm text-gray-500">₹15.08/month, billed annually</p>
+                                        </div>
+                                        <ul className="space-y-2 mb-6">
+                                            <li className="flex items-center">
+                                                <span className="text-green-500 mr-2">✓</span>
+                                                All monthly plan features
+                                            </li>
+                                            <li className="flex items-center ">
+                                                <span className="text-green-500 mr-2">✓</span>
+                                                20% discount vs monthly plan
+                                            </li>
+                                        </ul>
+                                        <Button
+                                            className="w-full bg-green-600 hover:bg-green-700"
+                                            onClick={() => handleSubscribe('yearly',189.06)}
+                                        >
+                                            Subscribe Now
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </Layout>
         </div>
     );

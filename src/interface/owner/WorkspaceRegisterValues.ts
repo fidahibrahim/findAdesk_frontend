@@ -15,7 +15,7 @@ export interface FormValues {
     endTime: Date | null;
     workingDays: string;
     pricePerHour: string;
-    workspaceRules: string;
+    workspaceRules: string[];
     amenities: string[];
     images: { file: File; preview: string }[];
     status: string
