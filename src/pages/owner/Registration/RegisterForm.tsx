@@ -14,8 +14,7 @@ const RegisterForm = () => {
       console.log(response, "response from owner reg")
       if (response.status === 200) {
         toast.success("An otp is sent to your mail")
-        console.log(response.data.email,"email in register from")
-        navigate("/owner/otp", { state: { email: response.data.email } })
+        navigate("/owner/otp", { state: { email: response.data.data.email } })
       }
     } catch (error) {
       handleError(error)

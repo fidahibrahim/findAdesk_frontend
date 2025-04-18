@@ -10,12 +10,8 @@ import Footer from '@/components/user/Footer';
 import { ContactData } from '@/interface/user/contactInterface';
 import { contactService } from '@/services/api/user';
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
 
 const ContactUs = () => {
-
-    const navigate = useNavigate()
-
     const initialValues = {
         name: '',
         email: '',

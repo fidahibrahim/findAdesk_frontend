@@ -13,21 +13,17 @@ const ViewDetails = () => {
     const workspaceId = location.state.workspaceId
 
     const [workspace, setWorkspace] = useState<workspaceRes | null>(null)
-    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchData = async (workspaceId: string) => {
             try {
-                setLoading(true);
                 const response = await getWorkspaceDetails(workspaceId)
                 console.log(response)
                 if (response?.status === 200) {
                     setWorkspace(response.data.data)
                 }
-                setLoading(false);
             } catch (error) {
                 handleError(error)
-                setLoading(false);
             }
         }
         fetchData(workspaceId)

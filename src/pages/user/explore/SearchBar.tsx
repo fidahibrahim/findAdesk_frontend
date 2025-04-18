@@ -11,6 +11,7 @@ const SearchBar = ({ onSearch }: any) => {
         amenities: ''
     });
 
+    
     const handleSearch = () => {
         if (filters.type || filters.location || filters.date || filters.amenities) {
             let day = '';

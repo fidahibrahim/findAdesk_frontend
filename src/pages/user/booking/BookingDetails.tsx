@@ -40,7 +40,7 @@ const BookingDetails = () => {
             try {
                 setLoading(true);
                 const response = await fetchBookingDetails(bookingId!)
-                console.log(response)
+                console.log(response,'ressssssssi')
                 if (response && response.data) {
                     const bookingData = response.data.data._doc;
                     const ratings = response.data.data.ratings || [];
@@ -210,7 +210,7 @@ const BookingDetails = () => {
                 <div className="bg-blue-50 rounded-xl shadow-sm overflow-hidden mb-6 flex flex-col sm:flex-row">
                     <div className="w-full sm:w-32 h-40 sm:h-auto flex justify-center sm:justify-start p-4 sm:p-0">
                         <img
-                            src={booking.workspaceId.images ? booking.workspaceId.images[0] : 'no image found'}
+                            src={booking?.workspaceId?.images?.[0] || '/default-image.jpg'}
                             alt={booking.workspaceId.workspaceName}
                             className="h-full w-auto sm:w-32 sm:h-auto rounded-md object-cover"
                         />

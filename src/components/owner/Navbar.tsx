@@ -1,4 +1,4 @@
-import { Home, Settings, FileText, Star, Briefcase } from "lucide-react";
+import { Home, FileText, Star, Briefcase } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
 const Navbar = () => {

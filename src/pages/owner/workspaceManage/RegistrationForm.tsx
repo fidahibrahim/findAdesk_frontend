@@ -27,7 +27,7 @@ const RegistrationForm = () => {
         endTime: null,
         workingDays: '',
         pricePerHour: '',
-        workspaceRules: '',
+        workspaceRules: [],
         amenities: [],
         images: [],
         status: ""
