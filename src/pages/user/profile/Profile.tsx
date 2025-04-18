@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { User, Edit, X } from 'lucide-react';
+import { User, Edit, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { profileInterface } from '@/interface/user/profileInterface';
@@ -12,13 +12,31 @@ import { loadStripe } from '@stripe/stripe-js';
 const ProfilePage = () => {
     const [profileData, setProfileData] = useState<profileInterface | null>(null);
     const [showSubscriptionPlans, setShowSubscriptionPlans] = useState(false);
+    const [isSubscriptionExpired, setIsSubscriptionExpired] = useState(false);
     const navigate = useNavigate()
+
+    const checkSubscriptionExpiration = (user: profileInterface) => {
+        if (!user.isSubscribed || !user.subscriptionEndDate) {
+            return false;
+        }
+        const currentDate = new Date();
+        const endDate = new Date(user.subscriptionEndDate);
+        return currentDate > endDate;
+    };
 
     useEffect(() => {
         const fetchProfile = async () => {
             try {
                 const response = await getProfile();
-                setProfileData(response.data.data);
+                const userData = response.data.data;
+                const expired = checkSubscriptionExpiration(userData);
+                setIsSubscriptionExpired(expired);
+
+                if (expired && userData.isSubscribed) {
+                    userData.isSubscribed = false;
+                }
+
+                setProfileData(userData);
             } catch (error) {
                 handleError(error);
             }
@@ -27,13 +45,30 @@ const ProfilePage = () => {
     }, []);
 
     const handleSubscribe = async (planType: string, amount: number) => {
-       
         const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
         const stripe = await loadStripe(stripeKey);
         const response = await addSubscription(planType, amount);
         stripe?.redirectToCheckout({ sessionId: response.data.data.id });
-
         setShowSubscriptionPlans(false);
+    };
+
+    const formatDate = (dateString?: Date) => {
+        if (!dateString) return "N/A";
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    };
+
+    const getDaysRemaining = (endDateString?: Date) => {
+        if (!endDateString) return 0;
+        const endDate = new Date(endDateString);
+        const currentDate = new Date();
+        if (currentDate > endDate) return 0;
+        const differenceInTime = endDate.getTime() - currentDate.getTime();
+        return Math.ceil(differenceInTime / (1000 * 3600 * 24));
     };
 
     return (
@@ -88,6 +123,74 @@ const ProfilePage = () => {
                                         </div>
                                     </div>
                                 </div>
+                                {profileData?.isSubscribed && (
+                                    <div className="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h2 className="text-lg font-semibold text-blue-800">Subscription Status</h2>
+                                            <div className="flex items-center bg-green-100 text-green-700 px-3 py-1 rounded-full">
+                                                <CheckCircle className="w-4 h-4 mr-1" />
+                                                <span className="text-sm font-medium">Active</span>
+                                            </div>
+                                        </div>
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label className="text-sm font-medium text-blue-600">Plan Type</label>
+                                                <p className="mt-1 font-medium text-gray-900 capitalize">
+                                                    {profileData.subscriptionType} Plan
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <label className="text-sm font-medium text-blue-600">Benefits</label>
+                                                <p className="mt-1 text-gray-700">
+                                                    {profileData.subscriptionType === 'monthly' ? (
+                                                        'Cancel up to 1 hour before booking with no cancellation fees'
+                                                    ) : (
+                                                        'All monthly plan features plus 20% discount'
+                                                    )}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <label className="text-sm font-medium text-blue-600">Start Date</label>
+                                                <p className="mt-1 text-gray-700">
+                                                    {formatDate(profileData.subscriptionStartDate)}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <label className="text-sm font-medium text-blue-600">End Date</label>
+                                                <div className="mt-1 flex items-center">
+                                                    <p className="text-gray-700 mr-2">
+                                                        {formatDate(profileData.subscriptionEndDate)}
+                                                    </p>
+                                                    <div className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">
+                                                        {getDaysRemaining(profileData.subscriptionEndDate)} days remaining
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Expired Subscription Notice */}
+                                {isSubscriptionExpired && (
+                                    <div className="bg-yellow-50 p-6 rounded-xl border border-yellow-200">
+                                        <div className="flex items-center space-x-3 text-yellow-800">
+                                            <AlertCircle className="w-5 h-5" />
+                                            <h3 className="font-medium">Your subscription has expired</h3>
+                                        </div>
+                                        <p className="mt-2 text-yellow-700 pl-8">
+                                            Your {profileData?.subscriptionType} plan expired on {formatDate(profileData?.subscriptionEndDate)}.
+                                            Please renew your subscription to continue enjoying our premium features.
+                                        </p>
+                                        <div className="mt-4 pl-8">
+                                            <Button
+                                                className="bg-yellow-600 hover:bg-yellow-700 text-white"
+                                                onClick={() => setShowSubscriptionPlans(true)}
+                                            >
+                                                Renew Subscription
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </CardContent>
@@ -130,10 +233,10 @@ const ProfilePage = () => {
 
                                         </ul>
                                         <Button
-                                            className=" w-full bg-blue-600 hover:bg-blue-700"
-                                            onClick={() => handleSubscribe('monthly',79)}
+                                            className="w-full bg-blue-600 hover:bg-blue-700"
+                                            onClick={() => handleSubscribe('monthly', 79)}
                                         >
-                                            Subscribe Now
+                                            {isSubscriptionExpired ? "Renew Now" : "Subscribe Now"}
                                         </Button>
                                     </div>
                                 </div>
@@ -164,9 +267,9 @@ const ProfilePage = () => {
                                         </ul>
                                         <Button
                                             className="w-full bg-green-600 hover:bg-green-700"
-                                            onClick={() => handleSubscribe('yearly',189.06)}
+                                            onClick={() => handleSubscribe('yearly', 189.06)}
                                         >
-                                            Subscribe Now
+                                            {isSubscriptionExpired ? "Renew Now" : "Subscribe Now"}
                                         </Button>
                                     </div>
                                 </div>

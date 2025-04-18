@@ -28,6 +28,8 @@ const userEndpoints = {
     cancelBooking: '/api/booking/cancel',
     walletPayment: '/api/bookings/walletPayment',
     addSubscription: '/api/subscription/createStripeSession',
+    verifySubscription:"/api/verifySubscription",
+    
     
 }
 

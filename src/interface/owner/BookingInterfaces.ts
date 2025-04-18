@@ -3,6 +3,7 @@ interface User {
     email: string;
     mobile: string;
     _id: string;
+    isSubscribed?: boolean
 }
 
 interface Workspace {

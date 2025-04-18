@@ -10,7 +10,10 @@ export interface profileInterface {
     email: string;
     image: any;
     imageFile?: File;
-    isSubscribed?: boolean
+    isSubscribed?: boolean;
+    subscriptionType?: string;
+    subscriptionStartDate?: Date;
+    subscriptionEndDate?: Date;
 }
 
 

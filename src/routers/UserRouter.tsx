@@ -24,6 +24,7 @@ import Wallet from "@/pages/user/profile/Wallet"
 import SavedWorkspaceDetails from "@/pages/user/explore/SavedWorkspaceDetails"
 import Help from "@/pages/user/profile/Help"
 import Transactions from "@/pages/user/profile/Transactions"
+import SubscriptionSuccessPage from "@/pages/user/profile/SubscriptionSuccessPage"
 
 
 const UserRouter = () => {
@@ -53,6 +54,7 @@ const UserRouter = () => {
                 < Route path="/bookingConfirmation/:bookingId" element={<WithAuth component={BookingConfirmation} />} />
                 < Route path="/bookingDetails/:bookingId" element={<WithAuth component={BookingDetails} />} />
                 < Route path="/transactionHistory" element={<WithAuth component={Transactions} />} />
+                < Route path="/subscription-success" element={<WithAuth component={SubscriptionSuccessPage} />} />
             </Routes>
         </>
     )

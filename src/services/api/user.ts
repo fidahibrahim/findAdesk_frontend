@@ -320,3 +320,13 @@ export const addSubscription = async (planType: string, amount: number) => {
         return Promise.reject()
     }
 }
+
+export const verifySubscription = async (sessionId: string) => {
+    try {
+        const response = await Api.post(`${userEndpoints.verifySubscription}/${sessionId}`)
+        return response
+    } catch (error) {
+        apiHandler(error)
+        return Promise.reject()
+    }
+}
