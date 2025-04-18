@@ -13,7 +13,7 @@ interface Workspace {
     state: string;
     workspaceMail: string;
     spaceDescription?: string
-    images?: [],
+    images?: string[],
     _id: string;
 }
 

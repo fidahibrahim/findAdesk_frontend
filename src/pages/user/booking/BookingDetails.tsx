@@ -40,7 +40,7 @@ const BookingDetails = () => {
             try {
                 setLoading(true);
                 const response = await fetchBookingDetails(bookingId!)
-                console.log(response,'ressssssssi')
+                console.log(response, 'ressssssssi')
                 if (response && response.data) {
                     const bookingData = response.data.data._doc;
                     const ratings = response.data.data.ratings || [];
@@ -210,7 +210,7 @@ const BookingDetails = () => {
                 <div className="bg-blue-50 rounded-xl shadow-sm overflow-hidden mb-6 flex flex-col sm:flex-row">
                     <div className="w-full sm:w-32 h-40 sm:h-auto flex justify-center sm:justify-start p-4 sm:p-0">
                         <img
-                            src={booking?.workspaceId?.images?.[0] || '/default-image.jpg'}
+                            src={booking.workspaceId.images && booking.workspaceId.images?.[0]}
                             alt={booking.workspaceId.workspaceName}
                             className="h-full w-auto sm:w-32 sm:h-auto rounded-md object-cover"
                         />
@@ -224,7 +224,7 @@ const BookingDetails = () => {
                         </div>
                     </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                     {/* Payment Information */}
                     <div className="bg-blue-50 rounded-xl shadow-sm p-4 sm:p-6">
@@ -290,7 +290,7 @@ const BookingDetails = () => {
                         </div>
                     </div>
                 </div>
-                
+
                 <div className="flex flex-col sm:flex-row gap-3 mb-6">
                     {booking.status === 'pending' && (
                         <button
@@ -356,8 +356,8 @@ const BookingDetails = () => {
                                         <div className="text-gray-500 flex items-start text-sm">
                                             <AlertCircle className="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" />
                                             <span>
-                                                {isSubscribed ? 
-                                                    "You can only cancel up to 1 hour before the start time" : 
+                                                {isSubscribed ?
+                                                    "You can only cancel up to 1 hour before the start time" :
                                                     "You can only cancel up to 24 hours before the start time"}
                                             </span>
                                         </div>
@@ -367,7 +367,7 @@ const BookingDetails = () => {
                         </div>
                     )}
                 </div>
-                
+
                 {showReviewForm && booking.status === 'completed' && !hasReview && (
                     <ReviewForm
                         workspaceName={booking.workspaceId.workspaceName}
